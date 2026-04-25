@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141714;
+    --surface2: #1a1e1a;
+    --border: #2a2e2a;
+    --border2: #3a403a;
+    --green: #7fcf8a;
+    --green-dim: #4a8c54;
+    --amber: #e8c668;
+    --red: #e07070;
+    --text: #e8ede8;
+    --text-muted: #8a9e8a;
+    --text-dim: #5a6e5a;
+    --accent: #7fcf8a;
+    --tag-bg: #1f2b1f;
+    --tag-border: #2f4a2f;
+    --rule-bg: #1a1f1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    padding: 32px 28px;
+    max-width: 820px;
+  }
+
+  .doc-header {
+    border-bottom: 1px solid var(--border2);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+
+  .doc-header h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+
+  .doc-header p {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 300;
+  }
+
+  .section {
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .section-header:hover {
+    background: var(--surface2);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    width: 20px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.2px;
+    flex: 1;
+  }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 400;
+  }
+
+  .tag-caution { background: #2a1e10; color: var(--amber); border: 1px solid #4a3420; }
+  .tag-lean { background: #1a2a1a; color: var(--green); border: 1px solid #2a4a2a; }
+  .tag-precise { background: #1e1e2a; color: #9090d8; border: 1px solid #2a2a4a; }
+  .tag-outcome { background: #2a1e1e; color: var(--red); border: 1px solid #4a2a2a; }
+  .tag-pitfalls { background: #2a221a; color: #d4a870; border: 1px solid #4a3828; }
+  .tag-signal { background: #1a2a20; color: #70c4a0; border: 1px solid #2a4a38; }
+
+  .chevron {
+    font-size: 10px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+  }
+
+  .section.open .chevron {
+    transform: rotate(90deg);
+  }
+
+  .section-body {
+    display: none;
+    padding: 16px 18px;
+    background: var(--bg);
+  }
+
+  .section.open .section-body {
+    display: block;
+  }
+
+  .axiom {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--green-dim);
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    background: var(--tag-bg);
+    border-left: 2px solid var(--green-dim);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .rules-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+
+  .rules-list li {
+    padding-left: 16px;
+    position: relative;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .rules-list li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .rules-list li strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .rule-law {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--rule-bg);
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    padding: 10px 12px;
+    margin-top: 12px;
+  }
+
+  .rule-law-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--green);
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .rule-law-text {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .rule-test {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #191f19;
+    border: 1px solid #2a3a2a;
+    border-radius: 5px;
+    padding: 10px 12px;
+    margin-top: 10px;
+  }
+
+  .rule-test-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--amber);
+    background: #2a1e10;
+    border: 1px solid #4a3010;
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .rule-test-text {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .pitfall-grid {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .pitfall-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 11px 14px;
+  }
+
+  .pitfall-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-bottom: 5px;
+  }
+
+  .pitfall-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .pitfall-rule {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--green-dim);
+    margin-top: 6px;
+  }
+
+  .code-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px 12px;
+    margin: 10px 0;
+    color: #a8d8a8;
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  .signal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .signal-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+
+  .signal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+
+  .inline-example {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #90a890;
+    display: inline;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1># Agentic Coding Standards</h1>
+  <p>Behavioral guidelines for LLM-assisted development. Bias toward caution over speed — use judgment on trivial tasks.</p>
+</div>
+
+<div class="section open" id="s1">
+  <div class="section-header" onclick="toggle('s1')">
+    <span class="section-num">01</span>
+    <span class="section-title">Clarify Before You Build</span>
+    <span class="section-tag tag-caution">BEFORE CODING</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <div class="axiom">Assumptions left unstated become defects.</div>
+    <ul class="rules-list">
+      <li>State working assumptions explicitly before writing code. If uncertain, ask — don't speculate forward.</li>
+      <li>If the request has multiple valid readings, surface them. Never pick silently.</li>
+      <li>If a simpler path to the same outcome exists, say so. Push back when the ask is overengineered.</li>
+      <li>For non-trivial tasks, write a brief plan before executing. Clarity at the start compounds.</li>
+      <li>If something is genuinely unclear, stop. Name exactly what's missing. Ask <strong>once, precisely</strong>.</li>
+    </ul>
+    <div class="rule-law">
+      <span class="rule-law-label">RULE</span>
+      <span class="rule-law-text">Do not write code until the problem is unambiguous. An assumption you didn't state is a defect you haven't found yet.</span>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s2">
+  <div class="section-header" onclick="toggle('s2')">
+    <span class="section-num">02</span>
+    <span class="section-title">Lean and Purposeful Code</span>
+    <span class="section-tag tag-lean">MINIMIZE</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <div class="axiom">The right amount of code is the least that fully solves the problem.</div>
+    <ul class="rules-list">
+      <li>Implement exactly what was asked. Not a superset of it.</li>
+      <li>No abstractions for single-use code. No flexibility that wasn't requested.</li>
+      <li>No error handling for scenarios that can't realistically occur.</li>
+      <li>No future-proofing. Extensibility is a feature request, not a default.</li>
+      <li>Before submitting: could this do the same thing with significantly less code? If yes, rewrite it.</li>
+    </ul>
+    <div class="rule-test">
+      <span class="rule-test-label">TEST</span>
+      <span class="rule-test-text">Would a senior engineer ask "why does all of this exist?" or "is this overcomplicated?" If yes, simplify.</span>
+    </div>
+    <div class="rule-law">
+      <span class="rule-law-label">RULE</span>
+      <span class="rule-law-text">If any part of the code seems unnecessary, remove or simplify it. Every line must justify its existence.</span>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s3">
+  <div class="section-header" onclick="toggle('s3')">
+    <span class="section-num">03</span>
+    <span class="section-title">Precise, Bounded Edits</span>
+    <span class="section-tag tag-precise">SCOPE CONTROL</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <div class="axiom">Touch only what the task requires. Clean up only what your changes broke.</div>
+    <ul class="rules-list">
+      <li>Do not improve adjacent code, comments, or formatting unless explicitly asked.</li>
+      <li>Do not refactor stable code as a side effect of an unrelated fix.</li>
+      <li>Match existing style and conventions — consistency outweighs personal preference.</li>
+      <li>If you spot unrelated issues, <strong>flag them. Do not act on them unilaterally.</strong></li>
+    </ul>
+    <div class="section-divider"></div>
+    <div style="font-size:12px; color: var(--text-dim); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">WHEN YOUR CHANGES CREATE ORPHANS</div>
+    <ul class="rules-list">
+      <li>Remove imports, variables, and functions your changes made unused.</li>
+      <li>Leave pre-existing dead code alone unless removal was part of the request.</li>
+    </ul>
+    <div class="rule-test">
+      <span class="rule-test-label">TEST</span>
+      <span class="rule-test-text">Every changed line must trace directly to the requirement. If it can't, revert it.</span>
+    </div>
+    <div class="rule-law">
+      <span class="rule-law-label">RULE</span>
+      <span class="rule-law-text">Every changed line must directly relate to the stated requirement. Unrequested improvements are scope violations.</span>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s4">
+  <div class="section-header" onclick="toggle('s4')">
+    <span class="section-num">04</span>
+    <span class="section-title">Outcome-Oriented Execution</span>
+    <span class="section-tag tag-outcome">DEFINE DONE</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <div class="axiom">Don't describe what to do. Define what done looks like.</div>
+    <ul class="rules-list">
+      <li>Convert every task into a verifiable end state before starting.</li>
+      <li>Give success criteria, not step-by-step instructions. Strong criteria let the agent loop independently.</li>
+      <li>Weak criteria ("make it work") guarantee mid-execution clarification requests.</li>
+    </ul>
+    <div class="code-block">"Add validation"   →  Write tests for invalid inputs, then make them pass.
+"Fix the bug"      →  Write a test that reproduces it, then make it pass.
+"Refactor X"       →  Ensure tests pass before and after. No behavior change.</div>
+    <div style="font-size:12px; color: var(--text-dim); margin: 10px 0 8px; font-family: 'JetBrains Mono', monospace;">FOR MULTI-STEP TASKS — STATE THE PLAN FIRST</div>
+    <div class="code-block">1. [Action] → verified by: [check]
+2. [Action] → verified by: [check]
+3. [Action] → verified by: [check]</div>
+    <div class="rule-law">
+      <span class="rule-law-label">RULE</span>
+      <span class="rule-law-text">If success cannot be verified, do not proceed. Vague goals ("improve", "optimize", "make better") are not tasks.</span>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s5">
+  <div class="section-header" onclick="toggle('s5')">
+    <span class="section-num">05</span>
+    <span class="section-title">Known Failure Modes</span>
+    <span class="section-tag tag-pitfalls">PITFALLS</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <div class="pitfall-grid">
+      <div class="pitfall-card">
+        <div class="pitfall-name">UNCHECKED EARLY ASSUMPTIONS</div>
+        <div class="pitfall-desc">A wrong assumption at step one propagates through every step that follows. By the time it surfaces, the cost is large.</div>
+        <div class="pitfall-rule">→ State assumptions before writing code. Ask if they can't be verified.</div>
+      </div>
+      <div class="pitfall-card">
+        <div class="pitfall-name">SESSION MEMORY DECAY</div>
+        <div class="pitfall-desc">In long sessions, early decisions, constraints, and file states silently degrade. The agent re-introduces removed code or contradicts earlier choices.</div>
+        <div class="pitfall-rule">→ Re-anchor context explicitly at key checkpoints.</div>
+      </div>
+      <div class="pitfall-card">
+        <div class="pitfall-name">PHANTOM API USAGE</div>
+        <div class="pitfall-desc">The agent calls functions or references signatures that don't exist or have changed. Memory of an API is not knowledge of it.</div>
+        <div class="pitfall-rule">→ Verify against source or current docs before implementing.</div>
+      </div>
+      <div class="pitfall-card">
+        <div class="pitfall-name">PUSHBACK CAPITULATION</div>
+        <div class="pitfall-desc">When challenged, the agent abandons a correct solution to conform to the user's position. Correctness is not determined by who pushes back.</div>
+        <div class="pitfall-rule">→ Defend sound solutions with reasoning. Yield to better arguments, not pressure.</div>
+      </div>
+      <div class="pitfall-card">
+        <div class="pitfall-name">SCOPE CREEP</div>
+        <div class="pitfall-desc">The agent adds unrequested improvements, refactors, or defensive patterns. Expanding scope without consent is a failure even when the additions are technically sound.</div>
+        <div class="pitfall-rule">→ Implement exactly what was asked. Flag extras; don't ship them.</div>
+      </div>
+      <div class="pitfall-card">
+        <div class="pitfall-name">OPTIMISTIC EXECUTION</div>
+        <div class="pitfall-desc">The agent proceeds through ambiguity rather than surfacing it, embedding silent choices that only reveal themselves as bugs downstream.</div>
+        <div class="pitfall-rule">→ When in doubt, stop. Ask once, precisely. Then build.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="s6">
+  <div class="section-header" onclick="toggle('s6')">
+    <span class="section-num">✓</span>
+    <span class="section-title">Signal Check</span>
+    <span class="section-tag tag-signal">THIS IS WORKING WHEN</span>
+    <span class="chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <div class="signal-grid">
+      <div class="signal-item"><span class="signal-dot"></span><span>Diffs are clean — every changed line traces to the requirement</span></div>
+      <div class="signal-item"><span class="signal-dot"></span><span>Assumptions and ambiguities surface as questions before code is written</span></div>
+      <div class="signal-item"><span class="signal-dot"></span><span>Solutions are as small as the problem warrants</span></div>
+      <div class="signal-item"><span class="signal-dot"></span><span>Multi-step tasks complete with minimal mid-course intervention</span></div>
+      <div class="signal-item"><span class="signal-dot"></span><span>Unrelated issues are flagged, never silently fixed</span></div>
+      <div class="signal-item"><span class="signal-dot"></span><span>No code exists whose purpose can't be traced to a requirement</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
