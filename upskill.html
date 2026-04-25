@@ -1,0 +1,3629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Sprint — Pranav</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* =====================================================
+   AGENT SPRINT TRACKER — Complete Design System
+   ===================================================== */
+
+        :root {
+            /* Base palette */
+            --bg: #070910;
+            --surface-0: #0c0e14;
+            /* sidebar */
+            --surface-1: #10131a;
+            /* cards */
+            --surface-2: #151822;
+            /* raised cards, hover */
+            --surface-3: #1a1e2a;
+            /* inputs, code blocks */
+
+            /* Borders */
+            --border-0: #1c2030;
+            --border-1: #262d40;
+            --border-2: #323c52;
+
+            /* Typography */
+            --text-0: #f0f2f8;
+            /* headings, primary */
+            --text-1: #9ba3b8;
+            /* body, secondary */
+            --text-2: #555f7a;
+            /* muted, labels */
+            --text-3: #2e3548;
+            /* very faint */
+
+            /* Brand accent */
+            --accent: #00e8d6;
+            --accent-a10: rgba(0, 232, 214, .10);
+            --accent-a18: rgba(0, 232, 214, .18);
+            --accent-a30: rgba(0, 232, 214, .30);
+            --accent-glow: 0 0 24px rgba(0, 232, 214, .3);
+
+            /* Semantic colors */
+            --green: #0fd97a;
+            --green-a10: rgba(15, 217, 122, .10);
+            --green-a25: rgba(15, 217, 122, .25);
+            --amber: #f5a623;
+            --amber-a10: rgba(245, 166, 35, .10);
+            --red: #ff4d6a;
+            --red-a10: rgba(255, 77, 106, .10);
+            --violet: #a78bfa;
+            --violet-a10: rgba(167, 139, 250, .10);
+
+            /* Typography stacks */
+            --ff-display: "Bebas Neue", sans-serif;
+            --ff-body: "Inter", system-ui, sans-serif;
+            --ff-mono: "JetBrains Mono", monospace;
+
+            /* Spacing scale */
+            --sp-1: 4px;
+            --sp-2: 8px;
+            --sp-3: 12px;
+            --sp-4: 16px;
+            --sp-5: 20px;
+            --sp-6: 24px;
+            --sp-8: 32px;
+            --sp-10: 40px;
+            --sp-12: 48px;
+            --sp-16: 64px;
+
+            /* Border radius */
+            --radius-sm: 6px;
+            --radius: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+
+            /* Shadows */
+            --shadow-card: 0 2px 12px rgba(0, 0, 0, .4);
+            --shadow-hi: 0 8px 32px rgba(0, 0, 0, .6);
+        }
+
+        /* RESET */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-0);
+            font-family: var(--ff-body);
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ─── TOP NAV BAR ──────────────────────────────────────────────── */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: var(--surface-0);
+            border-bottom: 1px solid var(--border-0);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-6);
+            padding: 0 var(--sp-8);
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .topbar-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: var(--accent-glow);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: var(--accent-glow);
+            }
+
+            50% {
+                opacity: .35;
+                box-shadow: none;
+            }
+        }
+
+        .topbar-name {
+            font-family: var(--ff-display);
+            font-size: 22px;
+            letter-spacing: .06em;
+            color: var(--text-0);
+            line-height: 1;
+        }
+
+        .topbar-label {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            color: var(--text-2);
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        /* Progress in topbar */
+        .topbar-progress {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: var(--sp-4);
+            min-width: 0;
+        }
+
+        .topbar-bar-wrap {
+            flex: 1;
+            max-width: 320px;
+        }
+
+        .topbar-bar-track {
+            height: 4px;
+            background: var(--border-1);
+            border-radius: 4px;
+            overflow: visible;
+            position: relative;
+        }
+
+        .topbar-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #00b8ac);
+            border-radius: 4px;
+            transition: width .5s cubic-bezier(.4, 0, .2, 1);
+            position: relative;
+        }
+
+        .topbar-bar-fill::after {
+            content: "";
+            position: absolute;
+            right: -2px;
+            top: -4px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .topbar-pct {
+            font-family: var(--ff-display);
+            font-size: 24px;
+            color: var(--accent);
+            letter-spacing: .02em;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .topbar-count {
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            color: var(--text-2);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Topbar stats */
+        .topbar-stats {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-5);
+            flex-shrink: 0;
+        }
+
+        .topbar-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .topbar-stat-val {
+            font-family: var(--ff-display);
+            font-size: 20px;
+            line-height: 1;
+            letter-spacing: .02em;
+        }
+
+        .topbar-stat-val.done {
+            color: var(--green);
+        }
+
+        .topbar-stat-val.rem {
+            color: var(--amber);
+        }
+
+        .topbar-stat-lbl {
+            font-family: var(--ff-mono);
+            font-size: 9px;
+            color: var(--text-2);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .topbar-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border-1);
+        }
+
+        /* Topbar actions */
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-2);
+            flex-shrink: 0;
+        }
+
+        .tb-btn {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            padding: 6px 12px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-1);
+            background: transparent;
+            color: var(--text-1);
+            cursor: pointer;
+            transition: all .15s;
+            white-space: nowrap;
+            letter-spacing: .02em;
+        }
+
+        .tb-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-a10);
+        }
+
+        .tb-btn.primary {
+            border-color: var(--accent-a30);
+            color: var(--accent);
+            background: var(--accent-a10);
+            font-weight: 500;
+        }
+
+        .tb-btn.primary:hover {
+            background: var(--accent-a18);
+        }
+
+        .tb-btn.danger:hover {
+            border-color: var(--red);
+            color: var(--red);
+            background: var(--red-a10);
+        }
+
+        #started-label {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            color: var(--text-2);
+            letter-spacing: .04em;
+            white-space: nowrap;
+        }
+
+        /* ─── PHASE NAV (horizontal tabs) ─────────────────────────────── */
+        .phase-nav-bar {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: var(--surface-0);
+            border-bottom: 1px solid var(--border-0);
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            z-index: 99;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .phase-nav-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .phase-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 16px;
+            border: none;
+            border-right: 1px solid var(--border-0);
+            background: transparent;
+            color: var(--text-2);
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all .15s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .phase-tab:hover {
+            background: var(--surface-1);
+            color: var(--text-1);
+        }
+
+        .phase-tab.active {
+            color: var(--accent);
+            background: var(--accent-a10);
+        }
+
+        .phase-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .phase-tab.done-phase {
+            color: var(--green);
+        }
+
+        .phase-tab.done-phase .phase-tab-dot {
+            background: var(--green);
+        }
+
+        .phase-tab-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--border-2);
+            flex-shrink: 0;
+            transition: all .2s;
+        }
+
+        .phase-tab.active .phase-tab-dot {
+            background: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
+        }
+
+        .phase-tab-badge {
+            font-family: var(--ff-mono);
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 20px;
+            background: var(--surface-2);
+            border: 1px solid var(--border-1);
+            color: var(--text-2);
+        }
+
+        .phase-tab.active .phase-tab-badge {
+            background: var(--accent-a10);
+            border-color: var(--accent-a30);
+            color: var(--accent);
+        }
+
+        /* ─── MAIN CONTENT AREA ────────────────────────────────────────── */
+        .main-wrap {
+            margin-top: 100px;
+            /* topbar 56 + nav 44 */
+            min-height: calc(100vh - 100px);
+        }
+
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--sp-10) var(--sp-8) var(--sp-16);
+        }
+
+        /* Global progress bar below the nav */
+        .master-bar-wrap {
+            background: var(--surface-0);
+            border-bottom: 1px solid var(--border-0);
+            padding: var(--sp-3) var(--sp-8);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-4);
+        }
+
+        .master-bar-label {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            color: var(--text-2);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            flex-shrink: 0;
+        }
+
+        .master-track {
+            flex: 1;
+            height: 3px;
+            background: var(--border-1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .master-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #00b8ac);
+            border-radius: 3px;
+            transition: width .5s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .master-count {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            color: var(--text-2);
+            flex-shrink: 0;
+        }
+
+        /* ─── DONE BANNER ───────────────────────────────────────────────── */
+        .done-banner {
+            background: linear-gradient(135deg, var(--accent-a10), var(--green-a10));
+            border: 1px solid var(--accent-a30);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-5) var(--sp-6);
+            margin-bottom: var(--sp-8);
+            display: none;
+            align-items: center;
+            gap: var(--sp-5);
+        }
+
+        .done-banner.show {
+            display: flex;
+        }
+
+        .done-banner-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .done-banner-text h3 {
+            font-family: var(--ff-display);
+            font-size: 24px;
+            letter-spacing: .04em;
+            color: var(--accent);
+        }
+
+        .done-banner-text p {
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            color: var(--text-1);
+            margin-top: 3px;
+        }
+
+        /* ─── PHASE SECTION ─────────────────────────────────────────────── */
+        .phase-section {
+            margin-bottom: var(--sp-12);
+            scroll-margin-top: 116px;
+        }
+
+        /* Phase header */
+        .phase-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--sp-5);
+            margin-bottom: var(--sp-5);
+            padding-bottom: var(--sp-4);
+            border-bottom: 1px solid var(--border-0);
+        }
+
+        .phase-number {
+            font-family: var(--ff-display);
+            font-size: 56px;
+            line-height: 1;
+            color: var(--border-2);
+            letter-spacing: .02em;
+            flex-shrink: 0;
+            min-width: 60px;
+            transition: color .3s;
+        }
+
+        .phase-section.active-phase .phase-number {
+            color: var(--accent);
+        }
+
+        .phase-info {
+            flex: 1;
+            min-width: 0;
+            padding-top: 4px;
+        }
+
+        .phase-name {
+            font-family: var(--ff-display);
+            font-size: 20px;
+            letter-spacing: .08em;
+            color: var(--text-0);
+            margin-bottom: var(--sp-2);
+        }
+
+        .phase-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .phase-tag {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            letter-spacing: .05em;
+            padding: 2px 10px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-1);
+            color: var(--text-2);
+            white-space: nowrap;
+        }
+
+        .phase-tag.t-setup {
+            border-color: rgba(167, 139, 250, .3);
+            color: var(--violet);
+            background: var(--violet-a10);
+        }
+
+        .phase-tag.t-learn {
+            border-color: var(--accent-a30);
+            color: var(--accent);
+            background: var(--accent-a10);
+        }
+
+        .phase-tag.t-build {
+            border-color: var(--green-a25);
+            color: var(--green);
+            background: var(--green-a10);
+        }
+
+        .phase-tag.t-harden {
+            border-color: rgba(245, 166, 35, .3);
+            color: var(--amber);
+            background: var(--amber-a10);
+        }
+
+        .phase-tag.t-ship {
+            border-color: rgba(255, 77, 106, .3);
+            color: var(--red);
+            background: var(--red-a10);
+        }
+
+        .phase-progress-text {
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            color: var(--text-2);
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .phase-mini-bar {
+            width: 60px;
+            height: 3px;
+            background: var(--border-1);
+            border-radius: 2px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .phase-mini-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width .4s;
+        }
+
+        .pmf-setup {
+            background: var(--violet);
+        }
+
+        .pmf-learn {
+            background: var(--accent);
+        }
+
+        .pmf-build {
+            background: var(--green);
+        }
+
+        .pmf-harden {
+            background: var(--amber);
+        }
+
+        .pmf-ship {
+            background: var(--red);
+        }
+
+        /* ─── STEP CARD ─────────────────────────────────────────────────── */
+        .step {
+            display: flex;
+            align-items: stretch;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-0);
+            background: var(--surface-1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color .18s, background .18s;
+            position: relative;
+        }
+
+        .step+.step {
+            margin-top: 2px;
+        }
+
+        .step:hover {
+            border-color: var(--border-2);
+            background: var(--surface-2);
+        }
+
+        .step.current {
+            border-color: var(--accent);
+            background: var(--surface-2);
+            box-shadow: 0 0 0 1px var(--accent-a10), var(--shadow-hi);
+        }
+
+        .step.done {
+            opacity: .42;
+        }
+
+        .step.done .step-name {
+            text-decoration: line-through;
+            color: var(--text-2);
+        }
+
+        /* Left accent bar */
+        .step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: var(--radius) 0 0 var(--radius);
+            background: transparent;
+            transition: background .18s;
+        }
+
+        .step.current::before {
+            background: var(--accent);
+        }
+
+        .step.done::before {
+            background: var(--green);
+        }
+
+        /* Number column */
+        .step-num-col {
+            width: 58px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 18px 0;
+            gap: 10px;
+            background: var(--surface-0);
+            border-right: 1px solid var(--border-0);
+        }
+
+        .step-num {
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-2);
+            letter-spacing: .04em;
+        }
+
+        .step.current .step-num {
+            color: var(--accent);
+        }
+
+        .step.done .step-num {
+            color: var(--green);
+        }
+
+        .step-checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border-2);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s;
+            flex-shrink: 0;
+        }
+
+        .step.done .step-checkbox {
+            background: var(--green);
+            border-color: var(--green);
+            box-shadow: 0 0 12px var(--green-a25);
+        }
+
+        .step.current .step-checkbox {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px var(--accent-a18);
+        }
+
+        .check-icon {
+            width: 11px;
+            height: 11px;
+            opacity: 0;
+            transition: opacity .2s;
+        }
+
+        .step.done .check-icon {
+            opacity: 1;
+        }
+
+        /* Step body */
+        .step-body {
+            flex: 1;
+            padding: 16px 20px 14px;
+            min-width: 0;
+        }
+
+        .step-header-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .step-name {
+            font-family: var(--ff-body);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-0);
+            line-height: 1.45;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .step-badges {
+            display: flex;
+            gap: 4px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            font-family: var(--ff-mono);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: var(--radius-xl);
+            white-space: nowrap;
+        }
+
+        .badge-fire {
+            background: var(--red-a10);
+            color: #ff8096;
+            border: 1px solid rgba(255, 77, 106, .25);
+        }
+
+        .badge-focus {
+            background: var(--green-a10);
+            color: #6ee7ab;
+            border: 1px solid rgba(15, 217, 122, .25);
+        }
+
+        .badge-skip {
+            background: rgba(255, 255, 255, .04);
+            color: var(--text-2);
+            border: 1px solid var(--border-1);
+        }
+
+        .badge-new {
+            background: var(--accent-a10);
+            color: var(--accent);
+            border: 1px solid var(--accent-a30);
+        }
+
+        .badge-crit {
+            background: var(--amber-a10);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 166, 35, .25);
+        }
+
+        .step-expand {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            color: var(--text-3);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            user-select: none;
+            transition: color .15s;
+            padding: 1px 0;
+        }
+
+        .step-expand:hover {
+            color: var(--accent);
+        }
+
+        .expand-arrow {
+            transition: transform .2s;
+            display: inline-block;
+        }
+
+        .expand-arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .step-desc {
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            color: var(--text-1);
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .35s ease, margin-top .35s ease;
+        }
+
+        .step-desc.open {
+            max-height: 200px;
+            margin-top: 8px;
+        }
+
+        /* Right meta */
+        .step-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 16px 16px 16px 0;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .step-time {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            color: var(--text-2);
+            white-space: nowrap;
+            background: var(--surface-0);
+            padding: 3px 9px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-0);
+        }
+
+        .step-phase-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .pd-setup {
+            background: var(--violet);
+            box-shadow: 0 0 5px var(--violet);
+        }
+
+        .pd-learn {
+            background: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
+        }
+
+        .pd-build {
+            background: var(--green);
+            box-shadow: 0 0 5px var(--green);
+        }
+
+        .pd-harden {
+            background: var(--amber);
+            box-shadow: 0 0 5px var(--amber);
+        }
+
+        .pd-ship {
+            background: var(--red);
+            box-shadow: 0 0 5px var(--red);
+        }
+
+        /* Connector */
+        .step-connector {
+            width: 2px;
+            height: 10px;
+            background: var(--border-0);
+            margin: 0 0 0 28px;
+            border-radius: 1px;
+            display: block;
+        }
+
+        /* Break */
+        .break-card {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-4);
+            padding: var(--sp-3) 0;
+            margin: var(--sp-2) 0;
+            opacity: .3;
+        }
+
+        .break-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border-0);
+        }
+
+        .break-label {
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            color: var(--text-1);
+            white-space: nowrap;
+            letter-spacing: .06em;
+        }
+
+        /* ─── RESOURCES ─────────────────────────────────────────────────── */
+        .resources-section {
+            margin-top: var(--sp-16);
+            padding-top: var(--sp-10);
+            border-top: 1px solid var(--border-0);
+        }
+
+        .resources-heading {
+            font-family: var(--ff-display);
+            font-size: 28px;
+            letter-spacing: .06em;
+            color: var(--text-0);
+            margin-bottom: var(--sp-1);
+        }
+
+        .resources-sub {
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            color: var(--text-1);
+            margin-bottom: var(--sp-8);
+        }
+
+        .res-group {
+            margin-bottom: var(--sp-8);
+        }
+
+        .res-group-label {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--text-2);
+            margin-bottom: var(--sp-3);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-3);
+        }
+
+        .res-group-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-0);
+        }
+
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .res-card {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--sp-3);
+            background: var(--surface-1);
+            border: 1px solid var(--border-0);
+            border-radius: var(--radius);
+            padding: var(--sp-4);
+            text-decoration: none;
+            transition: border-color .15s, background .15s;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        .res-card:hover {
+            border-color: var(--accent);
+            background: var(--accent-a10);
+        }
+
+        .res-card:hover .res-card-title {
+            color: var(--accent);
+        }
+
+        .res-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-0);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-1);
+        }
+
+        .res-card-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .res-card-title {
+            font-family: var(--ff-body);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-0);
+            margin-bottom: 2px;
+            transition: color .15s;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .res-card-meta {
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            color: var(--text-1);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .res-step-tag {
+            font-family: var(--ff-mono);
+            font-size: 9px;
+            padding: 2px 7px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-1);
+            color: var(--text-2);
+            white-space: nowrap;
+            flex-shrink: 0;
+            align-self: flex-start;
+            margin-top: 2px;
+        }
+
+        /* People grid */
+        .res-people-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .res-person {
+            background: var(--surface-1);
+            border: 1px solid var(--border-0);
+            border-radius: var(--radius-lg);
+            padding: var(--sp-5);
+            text-decoration: none;
+            transition: border-color .15s, background .15s;
+            display: block;
+        }
+
+        .res-person:hover {
+            border-color: var(--accent);
+            background: var(--accent-a10);
+        }
+
+        .res-person-name {
+            font-family: var(--ff-body);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-0);
+            margin-bottom: 2px;
+        }
+
+        .res-person:hover .res-person-name {
+            color: var(--accent);
+        }
+
+        .res-person-role {
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            color: var(--text-1);
+            margin-bottom: var(--sp-2);
+        }
+
+        .res-person-why {
+            font-family: var(--ff-mono);
+            font-size: 11px;
+            color: var(--text-2);
+            line-height: 1.6;
+            margin-bottom: var(--sp-3);
+        }
+
+        .res-person-links {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .res-plink {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            padding: 3px 9px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-1);
+            color: var(--text-1);
+            text-decoration: none;
+            transition: all .15s;
+        }
+
+        .res-plink:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-a10);
+        }
+
+        /* Code block in resources */
+        .res-code-block {
+            background: var(--surface-0);
+            border: 1px solid var(--border-1);
+            border-radius: var(--radius);
+            padding: var(--sp-5) var(--sp-5);
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            line-height: 2;
+        }
+
+        .res-code-section-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--text-2);
+            margin-bottom: 4px;
+        }
+
+        .res-code-line {
+            color: var(--accent);
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .res-code-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .res-code-line.normal {
+            color: var(--text-0);
+        }
+
+        /* ─── NOTES ──────────────────────────────────────────────────────── */
+        .notes-section {
+            margin-top: var(--sp-16);
+            padding-top: var(--sp-10);
+            border-top: 1px solid var(--border-0);
+        }
+
+        .notes-heading {
+            font-family: var(--ff-display);
+            font-size: 28px;
+            letter-spacing: .06em;
+            color: var(--text-0);
+            margin-bottom: var(--sp-1);
+        }
+
+        .notes-sub {
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            color: var(--text-1);
+            margin-bottom: var(--sp-6);
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-3);
+        }
+
+        .note-card {
+            background: var(--surface-1);
+            border: 1px solid var(--border-0);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: border-color .15s;
+        }
+
+        .note-card:focus-within {
+            border-color: var(--accent);
+        }
+
+        .note-card-header {
+            padding: 10px var(--sp-4);
+            background: var(--surface-0);
+            border-bottom: 1px solid var(--border-0);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .note-card-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .note-card-label {
+            font-family: var(--ff-mono);
+            font-size: 10px;
+            color: var(--text-1);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .note-textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            resize: vertical;
+            color: var(--text-0);
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            padding: var(--sp-4);
+            min-height: 90px;
+            line-height: 1.7;
+            outline: none;
+        }
+
+        .note-textarea::placeholder {
+            color: var(--text-3);
+        }
+
+        /* ─── TOAST ──────────────────────────────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--surface-2);
+            border: 1px solid var(--border-2);
+            border-radius: var(--radius);
+            padding: 11px 18px;
+            font-family: var(--ff-mono);
+            font-size: 12px;
+            color: var(--accent);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all .22s cubic-bezier(.4, 0, .2, 1);
+            pointer-events: none;
+            z-index: 999;
+            box-shadow: var(--shadow-hi);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ─── SCROLLBAR ──────────────────────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-2);
+            border-radius: 3px;
+        }
+
+        /* ─── ANIMATION ──────────────────────────────────────────────────── */
+        .phase-section {
+            animation: up .35s ease both;
+        }
+
+        .phase-section:nth-child(1) {
+            animation-delay: .03s
+        }
+
+        .phase-section:nth-child(2) {
+            animation-delay: .06s
+        }
+
+        .phase-section:nth-child(3) {
+            animation-delay: .09s
+        }
+
+        .phase-section:nth-child(4) {
+            animation-delay: .12s
+        }
+
+        @keyframes up {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══════════════════ TOP NAV BAR ══════════════════ -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <div class="topbar-dot"></div>
+            <div>
+                <div class="topbar-name">PRANAV</div>
+            </div>
+            <div class="topbar-divider"></div>
+            <div class="topbar-label">Agent Sprint</div>
+        </div>
+
+        <div class="topbar-progress">
+            <div class="topbar-pct" id="radial-pct">0%</div>
+            <div class="topbar-bar-wrap">
+                <div class="topbar-bar-track">
+                    <div class="topbar-bar-fill" id="master-fill" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="topbar-count" id="master-count">0 of 45 complete</div>
+        </div>
+
+        <div class="topbar-stats">
+            <div class="topbar-divider"></div>
+            <div class="topbar-stat">
+                <div class="topbar-stat-val done" id="sb-done">0</div>
+                <div class="topbar-stat-lbl">Done</div>
+            </div>
+            <div class="topbar-stat">
+                <div class="topbar-stat-val rem" id="sb-rem">45</div>
+                <div class="topbar-stat-lbl">Left</div>
+            </div>
+            <div class="topbar-divider"></div>
+            <div id="started-label" style="font-family:var(--ff-mono);font-size:10px;color:var(--text-2)">NOT STARTED
+            </div>
+        </div>
+
+        <div class="topbar-actions">
+            <button class="tb-btn primary" onclick="markStarted()">▶ Start</button>
+            <button class="tb-btn" onclick="exportJSON()">↓ Export</button>
+            <button class="tb-btn" onclick="importJSON()">↑ Import</button>
+            <button class="tb-btn danger" onclick="resetAll()">⟳ Reset</button>
+        </div>
+    </header>
+
+    <!-- ══════════════════ PHASE TABS ══════════════════ -->
+    <nav class="phase-nav-bar" id="phase-nav-bar">
+        <button class="phase-tab active" onclick="scrollToPhase(1)" id="nav-1">
+            <div class="phase-tab-dot"></div>01 Environment<span class="phase-tab-badge" id="nav-1-c">0/4</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(2)" id="nav-2">
+            <div class="phase-tab-dot"></div>02 SKILL.md<span class="phase-tab-badge" id="nav-2-c">0/4</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(3)" id="nav-3">
+            <div class="phase-tab-dot"></div>03 Subagents<span class="phase-tab-badge" id="nav-3-c">0/5</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(4)" id="nav-4">
+            <div class="phase-tab-dot"></div>04 Build<span class="phase-tab-badge" id="nav-4-c">0/6</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(5)" id="nav-5">
+            <div class="phase-tab-dot"></div>05 Hooks<span class="phase-tab-badge" id="nav-5-c">0/3</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(6)" id="nav-6">
+            <div class="phase-tab-dot"></div>06 Evals<span class="phase-tab-badge" id="nav-6-c">0/3</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(7)" id="nav-7">
+            <div class="phase-tab-dot"></div>07 Review<span class="phase-tab-badge" id="nav-7-c">0/2</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(8)" id="nav-8">
+            <div class="phase-tab-dot"></div>08 Tools<span class="phase-tab-badge" id="nav-8-c">0/3</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(9)" id="nav-9">
+            <div class="phase-tab-dot"></div>09 Real Run<span class="phase-tab-badge" id="nav-9-c">0/5</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(10)" id="nav-10">
+            <div class="phase-tab-dot"></div>10 Iterate<span class="phase-tab-badge" id="nav-10-c">0/3</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(11)" id="nav-11">
+            <div class="phase-tab-dot"></div>11 Plugin<span class="phase-tab-badge" id="nav-11-c">0/3</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToPhase(12)" id="nav-12">
+            <div class="phase-tab-dot"></div>12 Ship<span class="phase-tab-badge" id="nav-12-c">0/4</span>
+        </button>
+        <button class="phase-tab" onclick="scrollToResources()">
+            <div class="phase-tab-dot" style="background:var(--text-3)"></div>Resources
+        </button>
+        <button class="phase-tab" onclick="scrollToNotes()">
+            <div class="phase-tab-dot" style="background:var(--text-3)"></div>Notes
+        </button>
+    </nav>
+
+    <!-- ══════════════════ MAIN WRAP ══════════════════ -->
+    <div class="main-wrap">
+
+        <!-- Progress sub-bar -->
+        <div class="master-bar-wrap">
+            <span class="master-bar-label">Progress</span>
+            <div class="master-track">
+                <div class="master-fill" id="master-fill-2" style="width:0%"></div>
+            </div>
+            <span class="master-count" id="master-count-2">0 / 45</span>
+        </div>
+
+        <div class="main">
+
+            <div class="done-banner" id="done-banner">
+                <div class="done-banner-icon">🚀</div>
+                <div class="done-banner-text">
+                    <h3>SPRINT COMPLETE</h3>
+                    <p>All 45 steps done. Ship it, Pranav.</p>
+                </div>
+            </div>
+
+            <!-- ══ PHASE 1 ══ -->
+            <section class="phase-section" id="phase-1">
+                <div class="phase-header">
+                    <div class="phase-number">01</div>
+                    <div class="phase-info">
+                        <div class="phase-name">ENVIRONMENT SETUP</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-setup">Setup</span>
+                            <span class="phase-tag">9:00 – 10:00</span>
+                            <span class="phase-tag">1 hr</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-setup" id="pb-1" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-1">0/4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-1" onclick="toggle(1)">
+                    <div class="step-num-col"><span class="step-num">01</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Verify Claude Code installed and API key working</div>
+                            <div class="step-badges"><span class="badge badge-fire">Do First</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,1)"><span class="expand-arrow"
+                                id="ea-1">›</span> details</div>
+                        <div class="step-desc" id="desc-1">Run: claude --version. Not installed: npm install -g
+                            @anthropic-ai/claude-code. Set ANTHROPIC_API_KEY in shell env. Test with a simple prompt
+                            before doing anything else.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~10 min</span>
+                        <div class="step-phase-dot pd-setup"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-2" onclick="toggle(2)">
+                    <div class="step-num-col"><span class="step-num">02</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Read Karpathy's 4 principles — forrestchang/andrej-karpathy-skills
+                                CLAUDE.md</div>
+                            <div class="step-badges"><span class="badge badge-fire">Must Read</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,2)"><span class="expand-arrow"
+                                id="ea-2">›</span> details</div>
+                        <div class="step-desc" id="desc-2">Apply to your existing skills: clarify-first, minimum change,
+                            only requested changes, verify-with-condition. Spot every violation in your current
+                            security-scan-v2.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-setup"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-3" onclick="toggle(3)">
+                    <div class="step-num-col"><span class="step-num">03</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Read Anthropic Skills Explained — the Skills vs Subagents vs MCP
+                                table only</div>
+                            <div class="step-badges"><span class="badge badge-focus">15 min</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,3)"><span class="expand-arrow"
+                                id="ea-3">›</span> details</div>
+                        <div class="step-desc" id="desc-3">claude.com/blog/skills-explained — just the distinction
+                            table. Skip everything else on that page.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">15 min</span>
+                        <div class="step-phase-dot pd-setup"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-4" onclick="toggle(4)">
+                    <div class="step-num-col"><span class="step-num">04</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Skim alexop.dev full-stack guide — "when to use what" section only
+                            </div>
+                            <div class="step-badges"><span class="badge badge-skip">Skim Only</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,4)"><span class="expand-arrow"
+                                id="ea-4">›</span> details</div>
+                        <div class="step-desc" id="desc-4">Confirm your mental model. You know most of this. 10 minutes
+                            max — don't rabbit-hole.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">10 min</span>
+                        <div class="step-phase-dot pd-setup"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 2 ══ -->
+            <section class="phase-section" id="phase-2">
+                <div class="phase-header">
+                    <div class="phase-number">02</div>
+                    <div class="phase-info">
+                        <div class="phase-name">SKILL.MD FORMAT MASTERY</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-learn">Learn</span>
+                            <span class="phase-tag">10:00 – 11:00</span>
+                            <span class="phase-tag">Gaps You Were Missing</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-learn" id="pb-2" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-2">0/4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-5" onclick="toggle(5)">
+                    <div class="step-num-col"><span class="step-num">05</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Understand the 5-layer model: CLAUDE.md → Skills → Subagents → Hooks
+                                → MCP</div>
+                            <div class="step-badges"><span class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,5)"><span class="expand-arrow"
+                                id="ea-5">›</span> details</div>
+                        <div class="step-desc" id="desc-5">CLAUDE.md = project memory. Skills = reusable expertise.
+                            Subagents = isolated workers. Hooks = lifecycle gates. MCP = external tools. Know which
+                            layer to reach for each problem type before touching any code.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-6" onclick="toggle(6)">
+                    <div class="step-num-col"><span class="step-num">06</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Master description writing — the trigger mechanism</div>
+                            <div class="step-badges"><span class="badge badge-fire">Critical</span><span
+                                    class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,6)"><span class="expand-arrow"
+                                id="ea-6">›</span> details</div>
+                        <div class="step-desc" id="desc-6">Description = the ONLY thing Claude reads before deciding to
+                            load a skill. It must be "pushy" — list every phrase, context, and synonym that should
+                            trigger it. Vague description means no trigger, ever. This is the most important concept in
+                            skill writing.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-7" onclick="toggle(7)">
+                    <div class="step-num-col"><span class="step-num">07</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Learn 3-level progressive disclosure pattern</div>
+                            <div class="step-badges"><span class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,7)"><span class="expand-arrow"
+                                id="ea-7">›</span> details</div>
+                        <div class="step-desc" id="desc-7">Level 1: metadata always in context (~100 words). Level 2:
+                            SKILL.md body loads on trigger (max 500 lines). Level 3: bundled reference files load on
+                            demand by the skill itself. Split your security scan correctly across all 3 levels.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-8" onclick="toggle(8)">
+                    <div class="step-num-col"><span class="step-num">08</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Open security-scan-v2 SKILL.md — list every weakness you can now see
+                            </div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,8)"><span class="expand-arrow"
+                                id="ea-8">›</span> details</div>
+                        <div class="step-desc" id="desc-8">Write findings in the notes section below. You'll fix them in
+                            Phase 4. Look critically at: description field coverage, body length vs 500-line limit, how
+                            reference files are loaded.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 3 ══ -->
+            <section class="phase-section" id="phase-3">
+                <div class="phase-header">
+                    <div class="phase-number">03</div>
+                    <div class="phase-info">
+                        <div class="phase-name">SUBAGENT ANATOMY & ORCHESTRATOR PATTERNS</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-learn">Learn</span>
+                            <span class="phase-tag">11:00 – 13:00</span>
+                            <span class="phase-tag">2 hrs · Deep</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-learn" id="pb-3" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-3">0/5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-9" onclick="toggle(9)">
+                    <div class="step-num-col"><span class="step-num">09</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Read code.claude.com/docs/sub-agents fully — frontmatter fields
+                                deeply</div>
+                            <div class="step-badges"><span class="badge badge-fire">Critical</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,9)"><span class="expand-arrow"
+                                id="ea-9">›</span> details</div>
+                        <div class="step-desc" id="desc-9">Focus hard on: tools (allowlist), disallowedTools (denylist),
+                            permissionMode, isolation, maxTurns, model, skills. These frontmatter fields are what your
+                            current agents are missing entirely.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~30 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-10" onclick="toggle(10)">
+                    <div class="step-num-col"><span class="step-num">10</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Learn the 5 coordination patterns for multi-agent systems</div>
+                            <div class="step-badges"><span class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,10)"><span class="expand-arrow"
+                                id="ea-10">›</span> details</div>
+                        <div class="step-desc" id="desc-10">1) Parallel fan-out — your scan uses this. 2) Sequential
+                            pipeline — output feeds next agent. 3) Conditional dispatch — orchestrator decides who runs.
+                            4) Map-reduce — subagents map, orchestrator reduces. 5) Recursive delegation. Know which
+                            you're using and WHY.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-11" onclick="toggle(11)">
+                    <div class="step-num-col"><span class="step-num">11</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Understand context isolation — why each subagent has its own window
+                            </div>
+                            <div class="step-badges"><span class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,11)"><span class="expand-arrow"
+                                id="ea-11">›</span> details</div>
+                        <div class="step-desc" id="desc-11">Each subagent runs in a separate context window. Prevents
+                            token bloat in the main agent. BUT subagents cannot share state — they only return a single
+                            result to the orchestrator. Know when to keep work in main context vs delegate.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-12" onclick="toggle(12)">
+                    <div class="step-num-col"><span class="step-num">12</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Clone obra/superpowers — read 3 skills end to end as benchmark</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,12)"><span class="expand-arrow"
+                                id="ea-12">›</span> details</div>
+                        <div class="step-desc" id="desc-12">Read: brainstorming, subagent-driven-development,
+                            root-cause-tracing. Note how each body stays short, how scripts are referenced externally,
+                            how description fields are worded. This is the community benchmark for quality.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~25 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-13" onclick="toggle(13)">
+                    <div class="step-num-col"><span class="step-num">13</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Study wshobson/agents — open one orchestrator file and map dispatch
+                                to aggregate flow</div>
+                            <div class="step-badges"><span class="badge badge-focus">30 min</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,13)"><span class="expand-arrow"
+                                id="ea-13">›</span> details</div>
+                        <div class="step-desc" id="desc-13">One orchestrator file only. Don't read the whole repo.
+                            Understand: how it dispatches to subagents and synthesizes results. Map what you see to the
+                            5 coordination patterns you just learned.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">30 min</span>
+                        <div class="step-phase-dot pd-learn"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LUNCH BREAK -->
+            <div class="break-card">
+                <div class="break-line"></div>
+                <span class="break-label">☕ Lunch — 13:00 to 14:00 — kha le bhai</span>
+                <div class="break-line"></div>
+            </div>
+
+            <!-- ══ PHASE 4 ══ -->
+            <section class="phase-section" id="phase-4">
+                <div class="phase-header">
+                    <div class="phase-number">04</div>
+                    <div class="phase-info">
+                        <div class="phase-name">BUILD — REWRITE ORCHESTRATOR</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-build">Build</span>
+                            <span class="phase-tag">14:00 – 16:30</span>
+                            <span class="phase-tag">2.5 hrs · Hands-on</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-build" id="pb-4" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-4">0/6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-14" onclick="toggle(14)">
+                    <div class="step-num-col"><span class="step-num">14</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Understand the skill trust model before touching any file</div>
+                            <div class="step-badges"><span class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,14)"><span class="expand-arrow"
+                                id="ea-14">›</span> details</div>
+                        <div class="step-desc" id="desc-14">Skills execute arbitrary code. Your skill will be public —
+                            audit it: no hardcoded paths, no credentials, no destructive bash commands. Anyone who
+                            installs it should be completely safe. This is your ethical obligation as a publisher.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-15" onclick="toggle(15)">
+                    <div class="step-num-col"><span class="step-num">15</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Design the output schema contract — the #1 failure mode in
+                                multi-agent systems</div>
+                            <div class="step-badges"><span class="badge badge-fire">Critical</span><span
+                                    class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,15)"><span class="expand-arrow"
+                                id="ea-15">›</span> details</div>
+                        <div class="step-desc" id="desc-15">Every subagent MUST return structured JSON only. Freeform
+                            prose = orchestrator crash. The contract: {agent, severity, rule_id, file, line,
+                            description, remediation}. All 10 agents must honour it exactly. Write the schema down
+                            first, then build. Never the other way.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-16" onclick="toggle(16)">
+                    <div class="step-num-col"><span class="step-num">16</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Add proper frontmatter to all 10 subagent reference files</div>
+                            <div class="step-badges"><span class="badge badge-fire">Hands-on</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,16)"><span class="expand-arrow"
+                                id="ea-16">›</span> details</div>
+                        <div class="step-desc" id="desc-16">Each agent needs: tools: [Read, Grep, Glob, Bash],
+                            disallowedTools: [Write, Edit], permissionMode: restricted. Scan agents are read-only. No
+                            exceptions. Least privilege is not optional.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~30 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-17" onclick="toggle(17)">
+                    <div class="step-num-col"><span class="step-num">17</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Tighten output schema section in every agent reference file</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,17)"><span class="expand-arrow"
+                                id="ea-17">›</span> details</div>
+                        <div class="step-desc" id="desc-17">Every agent file needs: exact field names, types, severity
+                            enum (CRITICAL / HIGH / MEDIUM / LOW / INFO), and an example JSON block showing correct
+                            output format. If it is not explicitly written down, agents will improvise — and fail.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~25 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-18" onclick="toggle(18)">
+                    <div class="step-num-col"><span class="step-num">18</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Fix orchestrator — schema validation before merging plus graceful
+                                failure handling</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,18)"><span class="expand-arrow"
+                                id="ea-18">›</span> details</div>
+                        <div class="step-desc" id="desc-18">Malformed output → log as WARNING, skip agent, continue.
+                            Missing required fields → reject. Dedup by (file, line, rule_id) after merge. The
+                            orchestrator must never crash because one subagent failed.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-19" onclick="toggle(19)">
+                    <div class="step-num-col"><span class="step-num">19</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Rewrite SKILL.md description field — make it pushy and exhaustive
+                            </div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,19)"><span class="expand-arrow"
+                                id="ea-19">›</span> details</div>
+                        <div class="step-desc" id="desc-19">Every phrase that should trigger it: "security scan",
+                            "pre-launch check", "audit codebase", "find vulnerabilities", "secrets scan", "is it safe to
+                            deploy", "go-live check", "check for hardcoded keys", "vulnerability audit before launch".
+                            More phrases = more reliable triggering.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~10 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 5 ══ -->
+            <section class="phase-section" id="phase-5">
+                <div class="phase-header">
+                    <div class="phase-number">05</div>
+                    <div class="phase-info">
+                        <div class="phase-name">HOOKS — QUALITY GATES</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-build">Build</span>
+                            <span class="phase-tag">16:30 – 17:30</span>
+                            <span class="phase-tag">1 hr</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-build" id="pb-5" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-5">0/3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-20" onclick="toggle(20)">
+                    <div class="step-num-col"><span class="step-num">20</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Read hooks documentation — PreToolUse and PostToolUse only</div>
+                            <div class="step-badges"><span class="badge badge-focus">30 min</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,20)"><span class="expand-arrow"
+                                id="ea-20">›</span> details</div>
+                        <div class="step-desc" id="desc-20">Skip all other hook types. PreToolUse and PostToolUse cover
+                            90% of quality gate use cases. Understand: how hooks receive tool input, how to reject an
+                            operation, how to pass through.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">30 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-21" onclick="toggle(21)">
+                    <div class="step-num-col"><span class="step-num">21</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Add PostToolUse hook — validate subagent JSON output against findings
+                                schema</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,21)"><span class="expand-arrow"
+                                id="ea-21">›</span> details</div>
+                        <div class="step-desc" id="desc-21">If output is missing severity, file, or rule_id — reject it
+                            before the orchestrator ever sees it. Log the rejection clearly so you know exactly which
+                            agent failed during debugging.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-22" onclick="toggle(22)">
+                    <div class="step-num-col"><span class="step-num">22</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Add PreToolUse hook — block any Bash write operation outside /tmp
+                            </div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,22)"><span class="expand-arrow"
+                                id="ea-22">›</span> details</div>
+                        <div class="step-desc" id="desc-22">Scan agents are read-only. Any Bash command that tries to
+                            write to the repo under audit must be immediately rejected. This is your structural safety
+                            net against accidental modification.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 6 ══ -->
+            <section class="phase-section" id="phase-6">
+                <div class="phase-header">
+                    <div class="phase-number">06</div>
+                    <div class="phase-info">
+                        <div class="phase-name">TRIGGER EVALS & DESCRIPTION TUNING</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-harden">Harden</span>
+                            <span class="phase-tag">17:30 – 18:30</span>
+                            <span class="phase-tag">1 hr</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-harden" id="pb-6" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-6">0/3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-23" onclick="toggle(23)">
+                    <div class="step-num-col"><span class="step-num">23</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Install anthropics/skill-creator in Claude Code</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,23)"><span class="expand-arrow"
+                                id="ea-23">›</span> details</div>
+                        <div class="step-desc" id="desc-23">/plugin marketplace add anthropics/skill-creator — this is
+                            the tool that measures whether your skill triggers reliably. Non-negotiable before shipping.
+                        </div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~5 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-24" onclick="toggle(24)">
+                    <div class="step-num-col"><span class="step-num">24</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Write 20+ trigger test prompts for the orchestrator skill</div>
+                            <div class="step-badges"><span class="badge badge-new">Bumped from 10</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,24)"><span class="expand-arrow"
+                                id="ea-24">›</span> details</div>
+                        <div class="step-desc" id="desc-24">Vary phrasing, intent, formality, and context. Examples:
+                            "security scan", "audit my repo before launch", "find hardcoded secrets", "check if codebase
+                            is safe to deploy", "run pre-launch security check", "vulnerability scan this project". Need
+                            20 minimum for statistical confidence.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-25" onclick="toggle(25)">
+                    <div class="step-num-col"><span class="step-num">25</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Run skill-creator optimization loop — iterate until 80%+ trigger rate
+                            </div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,25)"><span class="expand-arrow"
+                                id="ea-25">›</span> details</div>
+                        <div class="step-desc" id="desc-25">Test → see what failed → rewrite description → test again.
+                            Do not stop before 80%. Description is literally everything. A skill that doesn't trigger is
+                            a skill that doesn't exist.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~35 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 7 ══ -->
+            <section class="phase-section" id="phase-7">
+                <div class="phase-header">
+                    <div class="phase-number">07</div>
+                    <div class="phase-info">
+                        <div class="phase-name">DAY 1 REVIEW & VERIFICATION</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-harden">Review</span>
+                            <span class="phase-tag">18:30 – 19:00</span>
+                            <span class="phase-tag">30 min</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-harden" id="pb-7" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-7">0/2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-26" onclick="toggle(26)">
+                    <div class="step-num-col"><span class="step-num">26</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Write 3 things that surprised you, plus 3 things still unclear</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,26)"><span class="expand-arrow"
+                                id="ea-26">›</span> details</div>
+                        <div class="step-desc" id="desc-26">Use the notes section below. Be specific — not "subagents
+                            confuse me" but "I don't understand how permissionMode=restricted differs from the tools
+                            allowlist". These become tomorrow morning's priority fixes.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-27" onclick="toggle(27)">
+                    <div class="step-num-col"><span class="step-num">27</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">End-of-day check: skill installs, triggers on "security scan my
+                                project", hook validates output</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,27)"><span class="expand-arrow"
+                                id="ea-27">›</span> details</div>
+                        <div class="step-desc" id="desc-27">All 3 must be true before you close the laptop. If any fail
+                            — note it precisely and fix it first thing tomorrow morning. Do not carry ambiguity into Day
+                            2.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 8 ══ -->
+            <section class="phase-section" id="phase-8">
+                <div class="phase-header">
+                    <div class="phase-number">08</div>
+                    <div class="phase-info">
+                        <div class="phase-name">INSTALL SCANNER TOOLS & CLEAR BLOCKERS</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-setup">Setup</span>
+                            <span class="phase-tag">Day 2 · 9:00 – 10:00</span>
+                            <span class="phase-tag">1 hr</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-setup" id="pb-8" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-8">0/3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-28" onclick="toggle(28)">
+                    <div class="step-num-col"><span class="step-num">28</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Install ALL scanner tools the agents depend on</div>
+                            <div class="step-badges"><span class="badge badge-fire">Before Anything Else</span><span
+                                    class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,28)"><span class="expand-arrow"
+                                id="ea-28">›</span> details</div>
+                        <div class="step-desc" id="desc-28">brew install trufflehog gitleaks · pip install bandit
+                            semgrep pip-audit safety detect-secrets checkov --break-system-packages · npm install -g
+                            better-npm-audit. Missing any tool = that agent fails silently with no error. Verify each
+                            with --version or --help after install.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~25 min</span>
+                        <div class="step-phase-dot pd-setup"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-29" onclick="toggle(29)">
+                    <div class="step-num-col"><span class="step-num">29</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Fix the 3 unclear things from yesterday — max 15 minutes per blocker
+                            </div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,29)"><span class="expand-arrow"
+                                id="ea-29">›</span> details</div>
+                        <div class="step-desc" id="desc-29">Check your notes. Ask Claude if stuck. Set a timer. Do not
+                            rabbit-hole past 15 minutes on any single thing. Keep moving forward.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-setup"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-30" onclick="toggle(30)">
+                    <div class="step-num-col"><span class="step-num">30</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Final pre-run check — all 10 agents verified against 3-point
+                                checklist</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,30)"><span class="expand-arrow"
+                                id="ea-30">›</span> details</div>
+                        <div class="step-desc" id="desc-30">Go through each reference file. Check 3 things per file:
+                            frontmatter has tools/disallowedTools set, output schema is explicit JSON with an example
+                            block, failure path is clearly defined.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-setup"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 9 ══ -->
+            <section class="phase-section" id="phase-9">
+                <div class="phase-header">
+                    <div class="phase-number">09</div>
+                    <div class="phase-info">
+                        <div class="phase-name">FIRST REAL RUN</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-build">Build</span>
+                            <span class="phase-tag">10:00 – 13:00</span>
+                            <span class="phase-tag">Most Important Block</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-build" id="pb-9" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-9">0/5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-31" onclick="toggle(31)">
+                    <div class="step-num-col"><span class="step-num">31</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Create test repo with 5 intentional vulnerabilities — one per agent
+                                domain</div>
+                            <div class="step-badges"><span class="badge badge-fire">Start Here</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,31)"><span class="expand-arrow"
+                                id="ea-31">›</span> details</div>
+                        <div class="step-desc" id="desc-31">1) Hardcoded API key in config.py. 2) jwt.decode() without
+                            algorithms param. 3) CORSMiddleware allow_origins=["*"]. 4) npm package with known CVE —
+                            axios 0.21.1. 5) Dockerfile with no USER directive (runs as root). Known issues = easy to
+                            verify agent detection works.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-32" onclick="toggle(32)">
+                    <div class="step-num-col"><span class="step-num">32</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Run ONE agent first — verify it works completely before running all
+                                10</div>
+                            <div class="step-badges"><span class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,32)"><span class="expand-arrow"
+                                id="ea-32">›</span> details</div>
+                        <div class="step-desc" id="desc-32">Start with the secrets agent. Does it find the hardcoded
+                            key? Does it return valid JSON? Does the hook validate it cleanly? Fix any issues here
+                            before running all 10 in parallel. This single step saves hours of debugging.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~25 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-33" onclick="toggle(33)">
+                    <div class="step-num-col"><span class="step-num">33</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Run all 10 agents — full parallel scan</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,33)"><span class="expand-arrow"
+                                id="ea-33">›</span> details</div>
+                        <div class="step-desc" id="desc-33">Watch what actually happens. Note which agents succeed,
+                            which fail silently, which return malformed output. Do not fix anything yet — observe first.
+                        </div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-34" onclick="toggle(34)">
+                    <div class="step-num-col"><span class="step-num">34</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Debug every failure — this IS the learning</div>
+                            <div class="step-badges"><span class="badge badge-fire">Never Skip</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,34)"><span class="expand-arrow"
+                                id="ea-34">›</span> details</div>
+                        <div class="step-desc" id="desc-34">3 guaranteed failures on the first run: 1) Tool not
+                            installed — fails silently. 2) Agent returns prose instead of JSON. 3) Bash output format
+                            different from what you assumed. Each failure is a lesson. Log everything in the notes
+                            section below.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~50 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-35" onclick="toggle(35)">
+                    <div class="step-num-col"><span class="step-num">35</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Fix reference files based on actual tool output — theory to
+                                production</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,35)"><span class="expand-arrow"
+                                id="ea-35">›</span> details</div>
+                        <div class="step-desc" id="desc-35">What you assumed tools output and what they actually output
+                            are different things. Align your bash parsing logic to the real output format. This is where
+                            agentic engineering becomes production reality.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~25 min</span>
+                        <div class="step-phase-dot pd-build"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LUNCH DAY 2 -->
+            <div class="break-card">
+                <div class="break-line"></div>
+                <span class="break-label">☕ Lunch — 13:00 to 14:00 — real run debugging drains fast</span>
+                <div class="break-line"></div>
+            </div>
+
+            <!-- ══ PHASE 10 ══ -->
+            <section class="phase-section" id="phase-10">
+                <div class="phase-header">
+                    <div class="phase-number">10</div>
+                    <div class="phase-info">
+                        <div class="phase-name">ITERATE & VERIFY v1.0</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-harden">Harden</span>
+                            <span class="phase-tag">14:00 – 15:30</span>
+                            <span class="phase-tag">1.5 hrs</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-harden" id="pb-10" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-10">0/3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-36" onclick="toggle(36)">
+                    <div class="step-num-col"><span class="step-num">36</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Second run — all 5 intentional vulnerabilities must appear as
+                                CRITICAL or HIGH</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,36)"><span class="expand-arrow"
+                                id="ea-36">›</span> details</div>
+                        <div class="step-desc" id="desc-36">If any intentional vulnerability is missing from the report,
+                            the corresponding agent is still broken. Fix it before moving on. Do not accept partial
+                            results.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~30 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-37" onclick="toggle(37)">
+                    <div class="step-num-col"><span class="step-num">37</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Verify full report format — exec summary, go/no-go verdict, dedup,
+                                raw JSON section</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,37)"><span class="expand-arrow"
+                                id="ea-37">›</span> details</div>
+                        <div class="step-desc" id="desc-37">Check: executive summary table present, go/no-go verdict
+                            explicit, deduplication working correctly, raw JSON in expandable details block. All four
+                            must pass.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-38" onclick="toggle(38)">
+                    <div class="step-num-col"><span class="step-num">38</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Fix remaining output formatting — this is your v1.0 working state
+                            </div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,38)"><span class="expand-arrow"
+                                id="ea-38">›</span> details</div>
+                        <div class="step-desc" id="desc-38">After this step, the skill works. Everything that follows is
+                            packaging and distribution. Mark this moment clearly.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~40 min</span>
+                        <div class="step-phase-dot pd-harden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 11 ══ -->
+            <section class="phase-section" id="phase-11">
+                <div class="phase-header">
+                    <div class="phase-number">11</div>
+                    <div class="phase-info">
+                        <div class="phase-name">PACKAGE AS CLAUDE CODE PLUGIN</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-ship">Ship</span>
+                            <span class="phase-tag">15:30 – 17:00</span>
+                            <span class="phase-tag">1.5 hrs</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-ship" id="pb-11" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-11">0/3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-39" onclick="toggle(39)">
+                    <div class="step-num-col"><span class="step-num">39</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Write plugin manifest — marketplace.json</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,39)"><span class="expand-arrow"
+                                id="ea-39">›</span> details</div>
+                        <div class="step-desc" id="desc-39">Study obra/superpowers-marketplace for the exact format:
+                            name, description, version, author, skills list, hooks list. One manifest file = one-command
+                            install for anyone in the world.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~30 min</span>
+                        <div class="step-phase-dot pd-ship"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-40" onclick="toggle(40)">
+                    <div class="step-num-col"><span class="step-num">40</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Test install — /plugin marketplace add your-handle/security-scan
+                                works from scratch</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,40)"><span class="expand-arrow"
+                                id="ea-40">›</span> details</div>
+                        <div class="step-desc" id="desc-40">Full fresh install and trigger test. If it does not work
+                            from a clean install, it will not work for anyone else either. Fix before pushing.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~20 min</span>
+                        <div class="step-phase-dot pd-ship"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-41" onclick="toggle(41)">
+                    <div class="step-num-col"><span class="step-num">41</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Write README — requirements, install command, example output, what it
+                                catches vs Trail of Bits</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,41)"><span class="expand-arrow"
+                                id="ea-41">›</span> details</div>
+                        <div class="step-desc" id="desc-41">One screenshot of an actual report output is worth 1000
+                            words of description. Include it. Trail of Bits has 12 security skills. You have 10
+                            specialist subagents with parallel fan-out, hooks quality gates, full go/no-go report, and
+                            database/auth/vector DB coverage.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~40 min</span>
+                        <div class="step-phase-dot pd-ship"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ PHASE 12 ══ -->
+            <section class="phase-section" id="phase-12">
+                <div class="phase-header">
+                    <div class="phase-number">12</div>
+                    <div class="phase-info">
+                        <div class="phase-name">SUBMIT & DOCUMENT</div>
+                        <div class="phase-meta">
+                            <span class="phase-tag t-ship">Ship</span>
+                            <span class="phase-tag">17:00 – 18:30</span>
+                            <span class="phase-tag">1.5 hrs</span>
+                            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
+                                <div class="phase-mini-bar">
+                                    <div class="phase-mini-fill pmf-ship" id="pb-12" style="width:0%"></div>
+                                </div>
+                                <span class="phase-progress-text" id="pt-12">0/4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step" id="s-42" onclick="toggle(42)">
+                    <div class="step-num-col"><span class="step-num">42</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Push repository to GitHub — public, MIT license, clean README</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,42)"><span class="expand-arrow"
+                                id="ea-42">›</span> details</div>
+                        <div class="step-desc" id="desc-42">Public repo, MIT license, clean README with install command
+                            prominent at the top. First impression matters — check it looks good on GitHub before
+                            sharing the link.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~10 min</span>
+                        <div class="step-phase-dot pd-ship"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-43" onclick="toggle(43)">
+                    <div class="step-num-col"><span class="step-num">43</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Write PR description — what it does, how it differs from Trail of
+                                Bits</div>
+                            <div class="step-badges"><span class="badge badge-new">Gap Filled</span></div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,43)"><span class="expand-arrow"
+                                id="ea-43">›</span> details</div>
+                        <div class="step-desc" id="desc-43">Trail of Bits: 12 security skills. Yours: 10 specialist
+                            subagents with parallel fan-out, hooks quality gates, full go/no-go report,
+                            database/auth/vector DB coverage. That is the differentiator. State it clearly and
+                            confidently.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~15 min</span>
+                        <div class="step-phase-dot pd-ship"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-44" onclick="toggle(44)">
+                    <div class="step-num-col"><span class="step-num">44</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Open PR to hesreallyhim/awesome-claude-code and
+                                VoltAgent/awesome-agent-skills</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,44)"><span class="expand-arrow"
+                                id="ea-44">›</span> details</div>
+                        <div class="step-desc" id="desc-44">Both accept community PRs. Paste the PR description you
+                            wrote in step 43. Link the GitHub repo. This is how your skill enters the community
+                            directory and gets discovered.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~10 min</span>
+                        <div class="step-phase-dot pd-ship"></div>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+
+                <div class="step" id="s-45" onclick="toggle(45)">
+                    <div class="step-num-col"><span class="step-num">45</span>
+                        <div class="step-checkbox"><svg class="check-icon" viewBox="0 0 10 10">
+                                <polyline points="1.5,5 4,7.5 8.5,2.5" fill="none" stroke="white" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg></div>
+                    </div>
+                    <div class="step-body">
+                        <div class="step-header-row">
+                            <div class="step-name">Draft LinkedIn post — "Built 10-agent security scan skill for Claude
+                                Code in 2 days"</div>
+                        </div>
+                        <div class="step-expand" onclick="expandDesc(event,45)"><span class="expand-arrow"
+                                id="ea-45">›</span> details</div>
+                        <div class="step-desc" id="desc-45">Structure: what you built → what surprised you about
+                            orchestrator and subagent patterns → GitHub link and example report screenshot. Technical
+                            but accessible. This is the content moment you have been building toward. Ship the post the
+                            same day as the PR.</div>
+                    </div>
+                    <div class="step-meta"><span class="step-time">~25 min</span>
+                        <div class="step-phase-dot pd-ship"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══ RESOURCES ══ -->
+            <div class="resources-section">
+                <div class="resources-heading">RESOURCES</div>
+                <div class="resources-sub">Every link you need — matched to the step that uses it. Opens in new tab.
+                </div>
+
+                <!-- Official Docs -->
+                <div class="res-group">
+                    <div class="res-group-label">Official Claude Code Docs</div>
+                    <div class="res-grid">
+                        <a class="res-card" href="https://code.claude.com/docs/en/skills" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">📄</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Skills Documentation</div>
+                                <div class="res-card-meta">code.claude.com/docs/en/skills</div>
+                            </div>
+                            <div class="res-step-tag">Steps 5–7</div>
+                        </a>
+                        <a class="res-card" href="https://code.claude.com/docs/en/sub-agents" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">🤖</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Sub-agents Documentation</div>
+                                <div class="res-card-meta">code.claude.com/docs/en/sub-agents</div>
+                            </div>
+                            <div class="res-step-tag">Step 9</div>
+                        </a>
+                        <a class="res-card" href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">
+                            <div class="res-icon">🪝</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Hooks Documentation</div>
+                                <div class="res-card-meta">code.claude.com/docs/en/hooks</div>
+                            </div>
+                            <div class="res-step-tag">Step 20</div>
+                        </a>
+                        <a class="res-card" href="https://claude.com/blog/skills-explained" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">📝</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Anthropic: Skills Explained Blog Post</div>
+                                <div class="res-card-meta">claude.com/blog/skills-explained</div>
+                            </div>
+                            <div class="res-step-tag">Step 3</div>
+                        </a>
+                        <a class="res-card" href="https://code.claude.com/docs/en/plugins" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">🔌</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Plugins — Packaging & Marketplace</div>
+                                <div class="res-card-meta">code.claude.com/docs/en/plugins</div>
+                            </div>
+                            <div class="res-step-tag">Step 39</div>
+                        </a>
+                        <a class="res-card"
+                            href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview"
+                            target="_blank" rel="noopener">
+                            <div class="res-icon">🧠</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Prompt Engineering Guide</div>
+                                <div class="res-card-meta">docs.anthropic.com · prompt engineering</div>
+                            </div>
+                            <div class="res-step-tag">Background</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Reading: Concepts -->
+                <div class="res-group">
+                    <div class="res-group-label">Must-Read Guides</div>
+                    <div class="res-grid">
+                        <a class="res-card" href="https://alexop.dev/posts/understanding-claude-code-full-stack/"
+                            target="_blank" rel="noopener">
+                            <div class="res-icon">📖</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">alexop.dev — Full Stack Guide (Updated Apr 2026)</div>
+                                <div class="res-card-meta">MCP · Skills · Subagents · Hooks · Plugins</div>
+                            </div>
+                            <div class="res-step-tag">Step 4</div>
+                        </a>
+                        <a class="res-card"
+                            href="https://alexop.dev/posts/claude-code-customization-guide-claudemd-skills-subagents/"
+                            target="_blank" rel="noopener">
+                            <div class="res-icon">📖</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">alexop.dev — CLAUDE.md, Skills & Subagents Deep Dive</div>
+                                <div class="res-card-meta">Customization guide · slash commands</div>
+                            </div>
+                            <div class="res-step-tag">Steps 5–8</div>
+                        </a>
+                        <a class="res-card"
+                            href="https://genaiunplugged.substack.com/p/claude-code-skills-commands-hooks-agents"
+                            target="_blank" rel="noopener">
+                            <div class="res-icon">📖</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">GenAI Unplugged — Hooks, Subagents & Skills Complete Guide
+                                </div>
+                                <div class="res-card-meta">4-layer extension stack · 20-min build</div>
+                            </div>
+                            <div class="res-step-tag">Steps 5–20</div>
+                        </a>
+                        <a class="res-card"
+                            href="https://muneebsa.medium.com/claude-code-extensions-explained-skills-mcp-hooks-subagents-agent-teams-plugins-9294907e84ff"
+                            target="_blank" rel="noopener">
+                            <div class="res-icon">📖</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Medium — All 6 Extension Points Explained</div>
+                                <div class="res-card-meta">MCP · Subagents · Hooks · Plugins · Skills · Agent Teams
+                                </div>
+                            </div>
+                            <div class="res-step-tag">Steps 5–11</div>
+                        </a>
+                        <a class="res-card"
+                            href="https://ofox.ai/blog/claude-code-hooks-subagents-skills-complete-guide-2026/"
+                            target="_blank" rel="noopener">
+                            <div class="res-icon">📖</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">oFox — Hooks, Subagents & Skills Complete Guide 2026</div>
+                                <div class="res-card-meta">25 lifecycle events · permission rules · examples</div>
+                            </div>
+                            <div class="res-step-tag">Steps 9–22</div>
+                        </a>
+                        <a class="res-card" href="https://simonwillison.net/tags/agentic-engineering/" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">📖</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Simon Willison — Agentic Engineering Posts</div>
+                                <div class="res-card-meta">simonwillison.net · README-driven dev · TDD with agents</div>
+                            </div>
+                            <div class="res-step-tag">Background</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- GitHub Repos to Study -->
+                <div class="res-group">
+                    <div class="res-group-label">GitHub Repos — Study These</div>
+                    <div class="res-grid">
+                        <a class="res-card" href="https://github.com/forrestchang/andrej-karpathy-skills"
+                            target="_blank" rel="noopener">
+                            <div class="res-icon">⭐</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">forrestchang/andrej-karpathy-skills</div>
+                                <div class="res-card-meta">Karpathy's 4 principles in CLAUDE.md · 57k stars</div>
+                            </div>
+                            <div class="res-step-tag">Step 2</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/obra/superpowers" target="_blank" rel="noopener">
+                            <div class="res-icon">⭐</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">obra/superpowers</div>
+                                <div class="res-card-meta">Benchmark multi-agent skills framework · 40k stars</div>
+                            </div>
+                            <div class="res-step-tag">Step 12</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/wshobson/agents" target="_blank" rel="noopener">
+                            <div class="res-icon">⭐</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">wshobson/agents</div>
+                                <div class="res-card-meta">184 subagents · 16 orchestrators · 150 skills</div>
+                            </div>
+                            <div class="res-step-tag">Step 13</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/anthropics/skill-creator" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">🛠</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">anthropics/skill-creator</div>
+                                <div class="res-card-meta">Official skill builder · trigger rate evals · optimization
+                                    loop</div>
+                            </div>
+                            <div class="res-step-tag">Step 23</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">📋</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">hesreallyhim/awesome-claude-code</div>
+                                <div class="res-card-meta">Community directory · submit your skill here</div>
+                            </div>
+                            <div class="res-step-tag">Step 44</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/VoltAgent/awesome-agent-skills" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">📋</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">VoltAgent/awesome-agent-skills</div>
+                                <div class="res-card-meta">1000+ skills · cross-platform · submit here too</div>
+                            </div>
+                            <div class="res-step-tag">Step 44</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/alirezarezvani/claude-skills" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">📂</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">alirezarezvani/claude-skills</div>
+                                <div class="res-card-meta">232+ skills · personas · cross-platform · 5.2k stars</div>
+                            </div>
+                            <div class="res-step-tag">Reference</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/trailofbits" target="_blank" rel="noopener">
+                            <div class="res-icon">🔒</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">Trail of Bits — Security Skills</div>
+                                <div class="res-card-meta">Production-grade security skill suite · your benchmark</div>
+                            </div>
+                            <div class="res-step-tag">Reference</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Scanner Tools -->
+                <div class="res-group">
+                    <div class="res-group-label">Scanner Tools — Install on Day 2 Step 28</div>
+                    <div class="res-grid">
+                        <a class="res-card" href="https://github.com/trufflesecurity/trufflehog" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">🐷</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">trufflehog</div>
+                                <div class="res-card-meta">brew install trufflehog · secrets + git history scan</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/gitleaks/gitleaks" target="_blank" rel="noopener">
+                            <div class="res-icon">🔑</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">gitleaks</div>
+                                <div class="res-card-meta">brew install gitleaks · fast git secrets scanner</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/PyCQA/bandit" target="_blank" rel="noopener">
+                            <div class="res-icon">🐍</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">bandit</div>
+                                <div class="res-card-meta">pip install bandit · Python SAST scanner</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                        <a class="res-card" href="https://semgrep.dev" target="_blank" rel="noopener">
+                            <div class="res-icon">🔍</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">semgrep</div>
+                                <div class="res-card-meta">pip install semgrep · Python + React AST rules</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/pypa/pip-audit" target="_blank" rel="noopener">
+                            <div class="res-icon">📦</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">pip-audit</div>
+                                <div class="res-card-meta">pip install pip-audit · CVE scan for requirements.txt</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/bridgecrewio/checkov" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">🐳</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">checkov</div>
+                                <div class="res-card-meta">pip install checkov · Dockerfile + IaC scanner</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/pypa/pip-audit" target="_blank" rel="noopener">
+                            <div class="res-icon">🛡</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">safety</div>
+                                <div class="res-card-meta">pip install safety · cross-refs pip-audit findings</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                        <a class="res-card" href="https://github.com/Yelp/detect-secrets" target="_blank"
+                            rel="noopener">
+                            <div class="res-icon">🕵️</div>
+                            <div class="res-card-body">
+                                <div class="res-card-title">detect-secrets</div>
+                                <div class="res-card-meta">pip install detect-secrets · baseline diff approach</div>
+                            </div>
+                            <div class="res-step-tag">Step 28</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Install Quick Reference -->
+                <div class="res-group">
+                    <div class="res-group-label">Install Commands — Copy Paste on Day 2</div>
+                    <div
+                        style="background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;font-family:var(--mono);font-size:11px;color:var(--muted);line-height:2;">
+                        <div
+                            style="color:var(--faint);margin-bottom:6px;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;">
+                            macOS (Homebrew)</div>
+                        <div style="color:var(--cyan);margin-bottom:10px;">brew install trufflehog gitleaks</div>
+                        <div
+                            style="color:var(--faint);margin-bottom:6px;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;">
+                            Python tools</div>
+                        <div style="color:var(--cyan);margin-bottom:10px;">pip install bandit semgrep pip-audit safety
+                            detect-secrets checkov --break-system-packages</div>
+                        <div
+                            style="color:var(--faint);margin-bottom:6px;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;">
+                            Node tools</div>
+                        <div style="color:var(--cyan);margin-bottom:10px;">npm install -g better-npm-audit</div>
+                        <div
+                            style="color:var(--faint);margin-bottom:6px;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;">
+                            Verify (run after each install)</div>
+                        <div style="color:var(--text);">trufflehog --version &amp;&amp; gitleaks version &amp;&amp;
+                            bandit --version &amp;&amp; semgrep --version &amp;&amp; pip-audit --version &amp;&amp;
+                            checkov --version</div>
+                    </div>
+                </div>
+
+                <!-- People to Follow -->
+                <div class="res-group">
+                    <div class="res-group-label">Experts to Follow — Tier 1 Foundational Voices</div>
+                    <div class="res-people-grid">
+                        <div class="res-person">
+                            <div class="res-person-name">Simon Willison</div>
+                            <div class="res-person-role">Independent researcher · creator of Datasette</div>
+                            <div class="res-person-why">Called Claude Skills "maybe a bigger deal than MCP" in Oct 2025
+                                — one of the first and most-cited takes that shaped how the community understood the
+                                format. Wrote the Agentic Engineering Patterns guide, coined the term. Runs 105+ posts
+                                on claude-code alone. Has his own simonw/claude-skills repo.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://x.com/simonw" target="_blank" rel="noopener">@simonw
+                                    on X</a>
+                                <a class="res-plink" href="https://github.com/simonw" target="_blank"
+                                    rel="noopener">github/simonw</a>
+                                <a class="res-plink" href="https://simonwillison.net/tags/skills/" target="_blank"
+                                    rel="noopener">blog: skills</a>
+                                <a class="res-plink" href="https://simonwillison.net/tags/agentic-engineering/"
+                                    target="_blank" rel="noopener">agentic engineering</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">Jesse Vincent (obra)</div>
+                            <div class="res-person-role">Founder, Prime Radiant — creator of Superpowers</div>
+                            <div class="res-person-why">Built obra/superpowers — the most starred multi-agent skills
+                                framework (40.9k stars, 3.1k forks). Pioneered orchestrator → subagent patterns with
+                                brainstorm → spec → plan → execute → review → merge workflows. Simon Willison described
+                                him as "one of the most creative users of coding agents." Ships obra/superpowers-lab for
+                                experimental subagent techniques.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/obra" target="_blank"
+                                    rel="noopener">github/obra</a>
+                                <a class="res-plink" href="https://github.com/obra/superpowers" target="_blank"
+                                    rel="noopener">superpowers repo</a>
+                                <a class="res-plink" href="https://github.com/obra/superpowers-lab" target="_blank"
+                                    rel="noopener">superpowers-lab</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">Andrej Karpathy</div>
+                            <div class="res-person-role">Former OpenAI · Former Tesla AI</div>
+                            <div class="res-person-why">Not a skill builder himself — the philosophical source. His Jan
+                                2026 post ("biggest change to my workflow in 20 years") triggered the entire skills
+                                movement. The 4 principles encoded in forrestchang's repo come directly from his
+                                observations. Follow for high-signal, infrequent posts.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://x.com/karpathy" target="_blank"
+                                    rel="noopener">@karpathy on X</a>
+                                <a class="res-plink" href="https://github.com/karpathy" target="_blank"
+                                    rel="noopener">GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:10px"></div>
+                    <div class="res-group-label">Tier 2 — Prolific Builders (High-Output Repos)</div>
+                    <div class="res-people-grid">
+                        <div class="res-person">
+                            <div class="res-person-name">wshobson</div>
+                            <div class="res-person-role">GitHub: wshobson/agents</div>
+                            <div class="res-person-why">Built the most comprehensive single-repo agent ecosystem: 184
+                                specialist subagents, 150 skills, 16 workflow orchestrators, 98 commands, 78 plugins.
+                                Full domains — architecture, languages, infra, ML, data, security, business ops. Best
+                                studied for orchestrator design patterns at scale.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/wshobson/agents" target="_blank"
+                                    rel="noopener">github/wshobson/agents</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">alirezarezvani</div>
+                            <div class="res-person-role">GitHub: alirezarezvani/claude-skills</div>
+                            <div class="res-person-why">5,200+ stars. 232+ skills across engineering, DevOps, marketing,
+                                compliance, and C-level advisory. Notable for agent personas — pre-configured identities
+                                with distinct communication styles and curated skill loadouts. Works cross-platform:
+                                Claude Code, Codex, Gemini CLI, Cursor, Aider. Has 305 stdlib-only Python tools
+                                alongside the SKILL.md files.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/alirezarezvani/claude-skills"
+                                    target="_blank" rel="noopener">github/alirezarezvani</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">Trail of Bits (security team)</div>
+                            <div class="res-person-role">Security research firm</div>
+                            <div class="res-person-why">Built the most professional security-focused skill suite in the
+                                ecosystem. Covers CodeQL + Semgrep static analysis, variant analysis, audit context
+                                building, fix verification, differential code review, MCP governance. Referenced as a
+                                gold standard for how production-grade skill writing should look.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/trailofbits" target="_blank"
+                                    rel="noopener">github/trailofbits</a>
+                                <a class="res-plink" href="https://x.com/trailofbits" target="_blank"
+                                    rel="noopener">@trailofbits on X</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">hesreallyhim</div>
+                            <div class="res-person-role">GitHub: hesreallyhim/awesome-claude-code</div>
+                            <div class="res-person-why">Maintains the most comprehensive curated directory of Claude
+                                Code skills, hooks, agents, and plugins — the go-to reference list for the community.
+                                Strong editorial eye for quality — reviews repos by architecture, readability, and
+                                real-world utility. Best for discovering who else to follow.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/hesreallyhim/awesome-claude-code"
+                                    target="_blank" rel="noopener">awesome-claude-code</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:10px"></div>
+                    <div class="res-group-label">Tier 3 — Specialists Worth Watching</div>
+                    <div class="res-people-grid">
+                        <div class="res-person">
+                            <div class="res-person-name">VoltAgent team</div>
+                            <div class="res-person-role">GitHub: VoltAgent/awesome-agent-skills</div>
+                            <div class="res-person-why">Curates the largest cross-platform skills directory (1,000+
+                                skills). Covers official org skills from Anthropic, Google, HuggingFace, Notion, Trail
+                                of Bits and community contributors. Best source for seeing the full breadth of what's
+                                being built across the ecosystem.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/VoltAgent/awesome-agent-skills"
+                                    target="_blank" rel="noopener">awesome-agent-skills</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">VILA-Lab (CUHK-Shenzhen)</div>
+                            <div class="res-person-role">GitHub: VILA-Lab/Dive-into-Claude-Code</div>
+                            <div class="res-person-why">Academic deep-dive into Claude Code's internals — multi-agent
+                                architecture, MCP integration, subagent sidechain design, hook execution model,
+                                permission system. Quadrilingual (EN/JA/KO/ZH). Best for understanding how subagents
+                                actually work under the hood rather than surface-level tutorials.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/VILA-Lab/Dive-into-Claude-Code"
+                                    target="_blank" rel="noopener">Dive-into-Claude-Code</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">heilcheng (Hailey Cheng)</div>
+                            <div class="res-person-role">GitHub: heilcheng/awesome-agent-skills</div>
+                            <div class="res-person-why">Maintains a cross-tool skill index covering Claude, Copilot, VS
+                                Code, Codex, Gemini CLI, Kiro, and Junie. Strong focus on making skills accessible to
+                                non-developers — plain-English instruction files, no terminal required. Good for
+                                tracking how the open standard is spreading beyond Anthropic's ecosystem.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink" href="https://github.com/heilcheng/awesome-agent-skills"
+                                    target="_blank" rel="noopener">awesome-agent-skills</a>
+                            </div>
+                        </div>
+                        <div class="res-person">
+                            <div class="res-person-name">alexop (Alex Opris)</div>
+                            <div class="res-person-role">Blog: alexop.dev</div>
+                            <div class="res-person-why">Wrote the most-cited practical guide to the full Claude Code
+                                stack (skills + subagents + hooks + plugins + MCP). Covers composition patterns, when to
+                                use each layer, and real workflow examples. Not a big repo builder but an excellent
+                                explainer — good for understanding the mental model before building.</div>
+                            <div class="res-person-links">
+                                <a class="res-plink"
+                                    href="https://alexop.dev/posts/understanding-claude-code-full-stack/"
+                                    target="_blank" rel="noopener">full stack guide</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ NOTES ══ -->
+            <div class="notes-section">
+                <div class="notes-heading">SPRINT NOTES</div>
+                <div class="notes-sub">Auto-saved as you type. All data stays in your browser — no server, no cloud.
+                </div>
+                <div class="notes-grid">
+                    <div class="note-card">
+                        <div class="note-card-header">
+                            <div class="note-card-dot" style="background:var(--cyan)"></div>
+                            <span class="note-card-label">Day 1 — Things that surprised me</span>
+                        </div>
+                        <textarea class="note-textarea" id="note-1" placeholder="Fill after Day 1 ends..."
+                            oninput="saveNotes()"></textarea>
+                    </div>
+                    <div class="note-card">
+                        <div class="note-card-header">
+                            <div class="note-card-dot" style="background:var(--amber)"></div>
+                            <span class="note-card-label">Day 1 — Still unclear (Day 2 morning fixes)</span>
+                        </div>
+                        <textarea class="note-textarea" id="note-2"
+                            placeholder="Be specific — not 'subagents confuse me' but exact gap..."
+                            oninput="saveNotes()"></textarea>
+                    </div>
+                    <div class="note-card">
+                        <div class="note-card-header">
+                            <div class="note-card-dot" style="background:var(--red)"></div>
+                            <span class="note-card-label">Day 2 — Bugs found in real run</span>
+                        </div>
+                        <textarea class="note-textarea" id="note-3"
+                            placeholder="Which agent failed? What was the error? How did you fix it?"
+                            oninput="saveNotes()"></textarea>
+                    </div>
+                    <div class="note-card">
+                        <div class="note-card-header">
+                            <div class="note-card-dot" style="background:var(--green)"></div>
+                            <span class="note-card-label">Links, commands, references</span>
+                        </div>
+                        <textarea class="note-textarea" id="note-4"
+                            placeholder="Paste commands, URLs, error messages, anything useful..."
+                            oninput="saveNotes()"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <input type="file" id="import-input" accept=".json" style="display:none" onchange="handleImport(event)">
+
+    <script>
+        // Dummy IDs for compatibility - topbar has its own elements
+        // sb-p1c, sb-p2c referenced in old render - create dummy elements
+        document.addEventListener('DOMContentLoaded', () => {
+            ['sb-p1c', 'sb-p2c', 'radial-started', 'radial-fill'].forEach(id => {
+                if (!document.getElementById(id)) {
+                    const el = document.createElement('span');
+                    el.id = id;
+                    el.style.display = 'none';
+                    document.body.appendChild(el);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        const KEY = 'agent_sprint_v3';
+        const TOTAL = 45;
+
+        // Phase → step mapping
+        const PHASES = {
+            1: { steps: [1, 2, 3, 4], label: '01', color: 'violet' },
+            2: { steps: [5, 6, 7, 8], label: '02', color: 'learn' },
+            3: { steps: [9, 10, 11, 12, 13], label: '03', color: 'learn' },
+            4: { steps: [14, 15, 16, 17, 18, 19], label: '04', color: 'build' },
+            5: { steps: [20, 21, 22], label: '05', color: 'build' },
+            6: { steps: [23, 24, 25], label: '06', color: 'harden' },
+            7: { steps: [26, 27], label: '07', color: 'harden' },
+            8: { steps: [28, 29, 30], label: '08', color: 'violet' },
+            9: { steps: [31, 32, 33, 34, 35], label: '09', color: 'build' },
+            10: { steps: [36, 37, 38], label: '10', color: 'harden' },
+            11: { steps: [39, 40, 41], label: '11', color: 'ship' },
+            12: { steps: [42, 43, 44, 45], label: '12', color: 'ship' },
+        };
+
+        let state = { done: {}, notes: {}, started: null };
+
+        function load() {
+            try { const r = localStorage.getItem(KEY); if (r) state = JSON.parse(r); } catch (e) { }
+            render();
+        }
+
+        function save() {
+            localStorage.setItem(KEY, JSON.stringify(state));
+            showToast('Saved');
+        }
+
+        function toggle(n) {
+            state.done[n] = !state.done[n];
+            save(); render();
+        }
+
+        function expandDesc(e, n) {
+            e.stopPropagation();
+            const desc = document.getElementById('desc-' + n);
+            const arrow = document.getElementById('ea-' + n);
+            const isOpen = desc.classList.contains('open');
+            desc.classList.toggle('open', !isOpen);
+            arrow.classList.toggle('open', !isOpen);
+        }
+
+        function render() {
+            const doneCount = Object.values(state.done).filter(Boolean).length;
+            const pct = Math.round(doneCount / TOTAL * 100);
+            const circumference = 314;
+            const offset = circumference - (pct / 100) * circumference;
+
+            document.getElementById('radial-pct').textContent = pct + '%';
+            document.getElementById('radial-fill').style.strokeDashoffset = offset;
+            document.getElementById('sb-done').textContent = doneCount;
+            document.getElementById('sb-rem').textContent = TOTAL - doneCount;
+            document.getElementById('master-fill').style.width = pct + '%';
+            document.getElementById('master-count').textContent = doneCount + ' of ' + TOTAL + ' steps complete';
+
+            // Done banner
+            document.getElementById('done-banner').classList.toggle('show', doneCount === TOTAL);
+
+            // Individual steps
+            for (let n = 1; n <= TOTAL; n++) {
+                const el = document.getElementById('s-' + n);
+                if (!el) continue;
+                el.classList.toggle('done', !!state.done[n]);
+            }
+
+            // Find current step (first incomplete)
+            let currentFound = false;
+            for (let n = 1; n <= TOTAL; n++) {
+                const el = document.getElementById('s-' + n);
+                if (!el) continue;
+                if (!state.done[n] && !currentFound) {
+                    el.classList.add('current'); currentFound = true;
+                } else {
+                    el.classList.remove('current');
+                }
+            }
+
+            // Phase stats
+            Object.keys(PHASES).forEach(ph => {
+                const phase = PHASES[ph];
+                const steps = phase.steps;
+                const phaseDone = steps.filter(n => state.done[n]).length;
+                const phaseTotal = steps.length;
+                const phasePct = Math.round(phaseDone / phaseTotal * 100);
+
+                const pb = document.getElementById('pb-' + ph);
+                if (pb) pb.style.width = phasePct + '%';
+                const pt = document.getElementById('pt-' + ph);
+                if (pt) pt.textContent = phaseDone + '/' + phaseTotal;
+
+                // Nav button state
+                const navBtn = document.getElementById('nav-' + ph);
+                const navCount = document.getElementById('nav-' + ph + '-c');
+                if (navBtn) {
+                    navBtn.classList.toggle('done-phase', phaseDone === phaseTotal);
+                    navBtn.classList.remove('active');
+                }
+                if (navCount) navCount.textContent = phaseDone + '/' + phaseTotal;
+
+                // Phase section active state
+                const section = document.getElementById('phase-' + ph);
+                if (section) section.classList.toggle('active-phase', phaseDone > 0 && phaseDone < phaseTotal);
+            });
+
+            // Sidebar phase mini stats
+            const p1d = PHASES[1].steps.filter(n => state.done[n]).length;
+            const p2d = PHASES[2].steps.filter(n => state.done[n]).length;
+            document.getElementById('sb-p1c').textContent = p1d + '/' + PHASES[1].steps.length;
+            document.getElementById('sb-p2c').textContent = p2d + '/' + PHASES[2].steps.length;
+
+            // Notes
+            ['1', '2', '3', '4'].forEach(id => {
+                const el = document.getElementById('note-' + id);
+                if (el && state.notes[id] !== undefined) el.value = state.notes[id];
+            });
+
+            if (state.started) {
+                document.getElementById('started-label').textContent = state.started;
+                document.getElementById('radial-started').textContent = state.started;
+            }
+
+            // Highlight active nav based on scroll position
+            updateActiveNav();
+        }
+
+        function saveNotes() {
+            ['1', '2', '3', '4'].forEach(id => {
+                const el = document.getElementById('note-' + id);
+                if (el) state.notes[id] = el.value;
+            });
+            localStorage.setItem(KEY, JSON.stringify(state));
+        }
+
+        function scrollTo(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function updateActiveNav() {
+            Object.keys(PHASES).forEach(ph => {
+                const section = document.getElementById('phase-' + ph);
+                const navBtn = document.getElementById('nav-' + ph);
+                if (!section || !navBtn) return;
+                const rect = section.getBoundingClientRect();
+                if (rect.top >= 0 && rect.top < window.innerHeight * 0.5) {
+                    navBtn.classList.add('active');
+                } else {
+                    if (!navBtn.classList.contains('done-phase')) navBtn.classList.remove('active');
+                }
+            });
+        }
+
+        function markStarted() {
+            if (state.started) { showToast('Already started: ' + state.started); return; }
+            const now = new Date();
+            state.started = now.toLocaleDateString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+            save(); render();
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function exportJSON() {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sprint-' + new Date().toISOString().slice(0, 10) + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Exported');
+        }
+
+        function importJSON() {
+            document.getElementById('import-input').click();
+        }
+
+        function handleImport(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                try {
+                    state = JSON.parse(ev.target.result);
+                    localStorage.setItem(KEY, JSON.stringify(state));
+                    render(); showToast('Imported');
+                } catch (err) { showToast('Invalid JSON file'); }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        }
+
+        function resetAll() {
+            if (!confirm('Reset all progress? This cannot be undone.')) return;
+            state = { done: {}, notes: {}, started: null };
+            save(); render(); showToast('Reset complete');
+        }
+
+        // Scroll tracking for nav highlight
+        const main = document.querySelector('.main');
+        if (main) {
+            main.addEventListener('scroll', () => {
+                Object.keys(PHASES).forEach(ph => {
+                    const section = document.getElementById('phase-' + ph);
+                    const navBtn = document.getElementById('nav-' + ph);
+                    if (!section || !navBtn) return;
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top >= -20 && rect.top < main.getBoundingClientRect().height * 0.4) {
+                        document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+                        navBtn.classList.add('active');
+                    }
+                });
+            }, { passive: true });
+        }
+
+        load();
+
+        // Also update second progress bar
+        const _render_orig = render;
+        render = function () {
+            _render_orig();
+            const doneCount = Object.values(state.done).filter(Boolean).length;
+            const pct = Math.round(doneCount / TOTAL * 100);
+            const fill2 = document.getElementById('master-fill-2');
+            const count2 = document.getElementById('master-count-2');
+            if (fill2) fill2.style.width = pct + '%';
+            if (count2) count2.textContent = doneCount + ' / ' + TOTAL;
+        };
+
+        // Scroll tracking on window scroll (no .main scroll element anymore)
+        window.addEventListener('scroll', () => {
+            Object.keys(PHASES).forEach(ph => {
+                const section = document.getElementById('phase-' + ph);
+                const navBtn = document.getElementById('nav-' + ph);
+                if (!section || !navBtn) return;
+                const rect = section.getBoundingClientRect();
+                if (rect.top >= 90 && rect.top < window.innerHeight * 0.4) {
+                    document.querySelectorAll('.phase-tab').forEach(b => b.classList.remove('active'));
+                    navBtn.classList.add('active');
+                }
+            });
+        }, { passive: true });
+
+        load();
+    </script>
+</body>
+
+</html>
