@@ -1,3 +1,15 @@
+---
+name: crypto-tls-agent
+description: Audits cryptographic usage, TLS configuration, JWT algorithm security, weak algorithms, and key management practices. Runs live TLS checks with sslyze. Use when the security-scan orchestrator requests crypto and TLS security analysis.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+  - WebFetch
+model: claude-sonnet-4-6
+---
+
 # Crypto & TLS Agent
 
 ## Mission

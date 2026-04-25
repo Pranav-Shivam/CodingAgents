@@ -1,3 +1,14 @@
+---
+name: data-agent
+description: Finds sensitive data leakage through logs, API responses, error messages, client-side storage, and over-scoped database queries. Use when the security-scan orchestrator requests data exposure analysis.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # Data Exposure Agent
 
 ## Mission

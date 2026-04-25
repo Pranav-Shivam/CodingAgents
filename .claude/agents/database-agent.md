@@ -1,3 +1,14 @@
+---
+name: database-agent
+description: Audits database connection security, credential handling, SQL/NoSQL injection patterns, privilege scope, and vector database authentication across all database types. Use when the security-scan orchestrator requests database security analysis.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # Database Security Agent
 
 ## Mission
@@ -128,30 +139,20 @@ Flag: `$where` with user input → CRITICAL. `find({request.*})` without validat
 
 ```bash
 # --- Qdrant ---
-# Check for unauthenticated local Qdrant (default port 6333, no api_key)
-grep -rn --include="*.py" \
-  -E "QdrantClient\(" \
-  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | head -10
-
 grep -rn --include="*.py" \
   -E "QdrantClient\(.*host|QdrantClient\(.*url" \
   <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "api_key\|https" \
   > /tmp/qdrant_no_auth.txt
 
 # --- Chroma ---
-# Chroma default: no auth, listens on 0.0.0.0:8000
-grep -rn --include="*.py" \
-  -E "chromadb\.(HttpClient|Client)\(" \
-  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | head -10
-
 grep -rn --include="*.py" \
   -E "chromadb\.HttpClient\(" \
   <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "auth_provider\|token\|headers" \
   > /tmp/chroma_no_auth.txt
 
-# Chroma settings: anonymized_telemetry and allow_reset in production
+# Chroma settings: allow_reset in production
 grep -rn --include="*.py" \
-  -E "allow_reset\s*=\s*True|anonymized_telemetry\s*=\s*False" \
+  -E "allow_reset\s*=\s*True" \
   <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null
 
 # --- Pinecone ---
@@ -177,7 +178,6 @@ Flags:
 - Vector DB client connecting to remote host without API key → HIGH
 - Vector DB client with hardcoded API key → CRITICAL
 - Chroma `allow_reset=True` in production → HIGH (wipes all collections)
-- Any vector DB on default port with no auth in production → HIGH
 
 ---
 
@@ -198,11 +198,6 @@ grep -rn --include="*.py" \
 grep -rn --include="*.py" \
   -E "snowflake\.connector\.connect\(.*password\s*=\s*['\"]" \
   <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null
-
-# Warehouse / account hardcoded
-grep -rn --include="*.py" \
-  -E "(account|warehouse|database)\s*=\s*['\"][a-zA-Z0-9_-]{3,}['\"]" \
-  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "os\.\|environ\|settings\."
 ```
 
 ---
@@ -210,16 +205,11 @@ grep -rn --include="*.py" \
 ## Scan 7 — Redis security
 
 ```bash
-# Redis with no password (default: no auth)
+# Redis with no password
 grep -rn --include="*.py" \
   -E "(redis\.Redis\(|redis\.from_url\(|aioredis\.from_url\()" \
-  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "password\|username\|decode_responses" \
+  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "password\|username" \
   > /tmp/redis_no_auth.txt
-
-# Redis storing sensitive session/token data
-grep -rn --include="*.py" \
-  -E "redis.*set\(.*token|redis.*set\(.*session|redis.*set\(.*jwt" \
-  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null
 
 # Redis without TLS (redis:// vs rediss://)
 grep -rn --include="*.py" --include="*.env" \
@@ -227,18 +217,13 @@ grep -rn --include="*.py" --include="*.env" \
   <repo_root> --exclude-dir=.git 2>/dev/null | grep -v "localhost\|127.0.0.1" > /tmp/redis_no_tls.txt
 ```
 
-Flag: Redis no auth in production → HIGH. Redis over `redis://` (not `rediss://`) to remote host → MEDIUM.
+Flag: Redis no auth in production → HIGH. Redis over `redis://` to remote host → MEDIUM.
 
 ---
 
 ## Scan 8 — Elasticsearch / OpenSearch
 
 ```bash
-grep -rn --include="*.py" \
-  -E "(Elasticsearch\(|OpenSearch\(|AsyncElasticsearch\()" \
-  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | head -10
-
-# No auth configured
 grep -rn --include="*.py" \
   -E "(Elasticsearch|OpenSearch)\(" \
   <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | \
@@ -257,32 +242,29 @@ grep -rn --include="*.py" \
 ## Scan 9 — Connection pool and timeout hygiene
 
 ```bash
-# Missing connection pool limits (can cause resource exhaustion / DoS)
+# Missing connection pool limits
 grep -rn --include="*.py" \
   -E "create_engine\(" \
-  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "pool_size\|max_overflow" \
-  > /tmp/no_pool_limits.txt
+  <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "pool_size\|max_overflow"
 
 # Missing timeouts on DB connections
 grep -rn --include="*.py" \
   -E "(create_engine|motor\.AsyncIOMotorClient|MongoClient)\(" \
   <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | \
-  grep -v "connect_timeout\|server_selection_timeout\|pool_timeout\|socket_timeout" \
-  > /tmp/no_timeout.txt
+  grep -v "connect_timeout\|server_selection_timeout\|pool_timeout\|socket_timeout"
 ```
 
 Flag: No pool limit → MEDIUM. No timeout on external DB → MEDIUM.
 
 ---
 
-## Scan 10 — Database migration security (Alembic / others)
+## Scan 10 — Database migration security (Alembic)
 
 ```bash
-# Alembic: check if migrations run on startup automatically
+# Check if migrations run on startup automatically
 grep -rn --include="*.py" \
   -E "(alembic\.command\.upgrade|run_migrations|upgrade.*head)" \
   <repo_root> --exclude-dir=.git --exclude-dir=venv 2>/dev/null | grep -v "alembic/env.py"
-# Auto-run migrations at startup → MEDIUM (risk of accidental schema changes in prod)
 
 # Alembic env.py: check connection string source
 grep -rn --include="*.py" \
@@ -307,17 +289,6 @@ grep -rn --include="*.py" \
     "match": "postgresql://admin:<redacted>@prod-db.example.com/mydb",
     "description": "PostgreSQL connection string with hardcoded credentials committed to source code.",
     "remediation": "Move DATABASE_URL to environment variable. Load via pydantic-settings: DATABASE_URL: str in Settings(BaseSettings). Never commit connection strings."
-  },
-  {
-    "agent": "database",
-    "severity": "HIGH",
-    "rule_id": "chroma-allow-reset-production",
-    "file": "backend/vectorstore/chroma_client.py",
-    "line": 12,
-    "db_type": "chroma",
-    "match": "Settings(allow_reset=True)",
-    "description": "Chroma allow_reset=True in production enables wiping all vector collections via a single API call.",
-    "remediation": "Set allow_reset=False or remove the setting entirely in production. Gate behind environment check: allow_reset=settings.DEBUG"
   }
 ]
 ```
