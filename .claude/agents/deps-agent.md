@@ -1,3 +1,14 @@
+---
+name: deps-agent
+description: Finds known CVEs and outdated packages across Python and Node/React dependency trees using pip-audit, safety, and npm audit. Use when the security-scan orchestrator requests dependency vulnerability scanning.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # Dependencies Agent
 
 ## Mission

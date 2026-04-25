@@ -1,3 +1,14 @@
+---
+name: sast-agent
+description: Runs static application security testing on Python FastAPI backend and React frontend using bandit and semgrep. Finds injection flaws, insecure patterns, auth gaps, and logic issues. Use when the security-scan orchestrator requests SAST analysis.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # SAST Agent (Static Application Security Testing)
 
 ## Mission

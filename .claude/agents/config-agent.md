@@ -1,3 +1,14 @@
+---
+name: config-agent
+description: Audits configuration files, CORS policy, security headers, FastAPI middleware setup, environment variable handling, and deployment config. Use when the security-scan orchestrator requests config and infrastructure security analysis.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # Config & Infra Agent
 
 ## Mission

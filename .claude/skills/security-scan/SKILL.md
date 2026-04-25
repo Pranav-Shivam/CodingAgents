@@ -47,22 +47,22 @@ Ask the user for:
 
 ## Step 2 — Dispatch subagents in parallel
 
-Spawn all ten subagents simultaneously. Read each agent's reference file before spawning:
+Spawn all ten subagents simultaneously using the Agent tool. Use each agent's registered name:
 
-| Subagent | Reference file | Primary tools |
+| Subagent | Agent name | Primary tools |
 |---|---|---|
-| Secrets | `references/secrets-agent.md` | trufflehog, gitleaks, detect-secrets |
-| SAST | `references/sast-agent.md` | bandit, semgrep |
-| Dependencies | `references/deps-agent.md` | pip-audit, npm audit, safety |
-| Config & Infra | `references/config-agent.md` | grep/regex, manual checklist |
-| Data Exposure | `references/data-agent.md` | AST scan, log pattern grep |
-| IaC & Container | `references/iac-container-agent.md` | checkov, Dockerfile/docker-compose manual checks |
-| Crypto & TLS | `references/crypto-tls-agent.md` | sslyze, weak algo grep, JWT algo audit |
-| RBAC | `references/rbac-agent.md` | route decorator audit, role logic grep |
-| Database | `references/database-agent.md` | connection audit, injection checks, vector DB auth |
-| Auth | `references/auth-agent.md` | JWT, OAuth2, SAML, session, API key, MFA audit |
+| Secrets | `secrets-agent` | trufflehog, gitleaks, detect-secrets |
+| SAST | `sast-agent` | bandit, semgrep |
+| Dependencies | `deps-agent` | pip-audit, npm audit, safety |
+| Config & Infra | `config-agent` | grep/regex, manual checklist |
+| Data Exposure | `data-agent` | AST scan, log pattern grep |
+| IaC & Container | `iac-container-agent` | checkov, Dockerfile/docker-compose manual checks |
+| Crypto & TLS | `crypto-tls-agent` | sslyze, weak algo grep, JWT algo audit |
+| RBAC | `rbac-agent` | route decorator audit, role logic grep |
+| Database | `database-agent` | connection audit, injection checks, vector DB auth |
+| Auth | `auth-agent` | JWT, OAuth2, SAML, session, API key, MFA audit |
 
-Each subagent returns a structured findings list (see `report-template.md` for schema).
+Pass the repo root path to each agent as context. Each agent returns a structured findings list (see `references/report-template.md` for schema).
 
 ---
 

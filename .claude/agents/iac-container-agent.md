@@ -1,3 +1,14 @@
+---
+name: iac-container-agent
+description: Audits Dockerfile, docker-compose.yml, and CI/CD pipeline configs for container security misconfigurations, privilege escalation paths, and insecure build patterns using checkov. Use when the security-scan orchestrator requests IaC and container security analysis.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # IaC & Container Agent
 
 ## Mission

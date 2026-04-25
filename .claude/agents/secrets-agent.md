@@ -1,3 +1,14 @@
+---
+name: secrets-agent
+description: Scans for hardcoded credentials, tokens, API keys, and secret material in the codebase and git history using trufflehog, gitleaks, and detect-secrets. Use when the security-scan orchestrator requests secrets detection.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # Secrets Agent
 
 ## Mission

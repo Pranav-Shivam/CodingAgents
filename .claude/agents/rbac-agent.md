@@ -1,3 +1,14 @@
+---
+name: rbac-agent
+description: Audits RBAC logic, route-level auth coverage, permission decorator patterns, and object-level authorization for over-permissioned access and missing authorization checks in FastAPI and React. Use when the security-scan orchestrator requests RBAC and access control analysis.
+tools:
+  - Bash
+  - Read
+  - Grep
+  - Glob
+model: claude-sonnet-4-6
+---
+
 # RBAC & Access Control Agent
 
 ## Mission
