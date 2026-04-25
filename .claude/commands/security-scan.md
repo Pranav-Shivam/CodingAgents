@@ -1,17 +1,3 @@
----
-name: security-scan
-description: >
-  Full pre-production security and severity audit for any Python FastAPI + React application.
-  Spawns ten specialist subagents in parallel covering secrets, SAST, dependencies, config,
-  data exposure, containers, crypto/TLS, RBAC, database security (PostgreSQL, MySQL, MongoDB,
-  Redis, Snowflake, Qdrant, Chroma, Pinecone, Weaviate, Elasticsearch, and more), and auth
-  (JWT, OAuth2, SAML, session, API keys, OIDC, MFA). Aggregates findings by CVSS severity
-  and produces a go/no-go markdown report. Trigger whenever the user says "security scan",
-  "security audit", "pre-launch check", "find vulnerabilities", "secrets scan",
-  "is the codebase safe to deploy", "check my auth", "check my database security",
-  or "run a security check before go-live". Always run before any production deployment.
----
-
 # Security Scan — Orchestrator
 
 ## Overview
@@ -62,7 +48,7 @@ Spawn all ten subagents simultaneously using the Agent tool. Use each agent's re
 | Database | `database-agent` | connection audit, injection checks, vector DB auth |
 | Auth | `auth-agent` | JWT, OAuth2, SAML, session, API key, MFA audit |
 
-Pass the repo root path to each agent as context. Each agent returns a structured findings list (see `references/report-template.md` for schema).
+Pass the repo root path to each agent as context. Each agent returns a structured findings list.
 
 ---
 
@@ -77,8 +63,141 @@ Pass the repo root path to each agent as context. Each agent returns a structure
 
 ## Step 4 — Generate report
 
-Use `references/report-template.md` as the output schema.
-Save report to `<repo_root>/security-report-<YYYY-MM-DD>.md`.
+Save report to `<repo_root>/security-report-<YYYY-MM-DD>.md` using this exact schema:
+
+````markdown
+# Security Audit Report — <project name>
+**Date:** <YYYY-MM-DD>
+**Repo:** <repo_root>
+**Stack:** Python FastAPI + React
+**Auth:** <JWT / OAuth2 / SAML / session>
+**Scanned by:** Claude Security Scan
+**Git history included:** yes/no
+
+---
+
+## Executive summary
+
+| Severity | Count | Go-live impact |
+|---|---|---|
+| CRITICAL | N | Hard block |
+| HIGH | N | Fix before launch |
+| MEDIUM | N | Fix within sprint |
+| LOW | N | Backlog |
+| INFO | N | Best practice |
+
+**Verdict:** GO / NO-GO
+**Reason:** <one sentence if NO-GO>
+
+---
+
+## CRITICAL findings
+
+> These must be resolved before any production deployment.
+
+### [CRIT-001] <title>
+- **File:** `path/to/file.py` line N
+- **Agent:** secrets / sast / dependencies / config / data_exposure / iac_container / crypto_tls / rbac / database / auth
+- **Rule:** <rule_id>
+- **Description:** <what was found and why it is dangerous>
+- **Remediation:**
+  ```
+  Exact fix steps here
+  ```
+
+---
+
+## HIGH findings
+
+### [HIGH-001] <title>
+...same structure as CRITICAL...
+
+---
+
+## MEDIUM findings
+
+### [MED-001] <title>
+...same structure...
+
+---
+
+## LOW / INFO findings
+
+| ID | File | Rule | Description |
+|---|---|---|---|
+| LOW-001 | ... | ... | ... |
+
+---
+
+## Remediation priority order
+
+1. Rotate any verified live credentials immediately — before touching any code
+2. Fix CRITICAL code issues
+3. Fix HIGH issues
+4. Update vulnerable dependencies
+5. Harden config and headers
+6. Address MEDIUM and LOW in next sprint
+
+---
+
+## Tools run
+
+| Tool | Version | Scope | Findings |
+|---|---|---|---|
+| trufflehog | x.x.x | filesystem + git history | N |
+| gitleaks | x.x.x | git history | N |
+| detect-secrets | x.x.x | filesystem | N |
+| bandit | x.x.x | Python backend | N |
+| semgrep | x.x.x | Python + React | N |
+| pip-audit | x.x.x | requirements.txt | N |
+| safety | x.x.x | requirements.txt | N |
+| npm audit | built-in | package.json | N |
+| checkov | x.x.x | Dockerfile / compose | N |
+| sslyze | x.x.x | live TLS endpoint | N |
+| database scan | — | all DB clients in repo | N |
+| auth scan | — | JWT / OAuth2 / SAML / session | N |
+| custom grep patterns | — | full repo | N |
+
+---
+
+## Raw findings JSON
+
+<details>
+<summary>Full machine-readable findings (click to expand)</summary>
+
+```json
+[
+  { ... all findings ... }
+]
+```
+
+</details>
+````
+
+---
+
+### CI/CD comment format
+
+If posting to a PR comment, use this format:
+
+````markdown
+## Security scan — <date>
+
+| Severity | Count |
+|---|---|
+| CRITICAL | N |
+| HIGH | N |
+| MEDIUM | N |
+| LOW | N |
+
+**Verdict:** GO / NO-GO
+
+**Top issues:**
+- [CRIT-001] <title> — `file:line`
+- [HIGH-001] <title> — `file:line`
+
+Full report: `security-report-<date>.md` in repo root.
+````
 
 ---
 
