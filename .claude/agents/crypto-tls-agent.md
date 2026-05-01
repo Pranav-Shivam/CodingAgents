@@ -7,7 +7,9 @@ tools:
   - Grep
   - Glob
   - WebFetch
-model: claude-sonnet-4-6
+model: sonnet
+permissionMode: plan
+maxTurns: 20
 ---
 
 # Crypto & TLS Agent

@@ -1,0 +1,38 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history — without this, Claude reviews one commit not the full PR
+
+      - name: Run Claude PR Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            Review the changes in this PR using the criteria in REVIEW.md.
+
+            Flag specifically:
+            - Security agent tool lists that include Write or Edit (audit agents must be read-only)
+            - Agent runbook steps with no concrete bash commands (vague steps = inconsistent results)
+            - CLAUDE.md changes that push it over 50 lines of instruction
+            - Hardcoded model IDs (e.g. claude-sonnet-4-6) instead of aliases (sonnet, haiku, opus)
+            - settings.json changes that remove safety constraints (token caps, auto-compact threshold)
+            - Missing docs/ updates when architecture or agent structure changes
+
+            For each finding: file name, line number, what rule it violates, and the specific fix.
+            Skip style/formatting issues. Focus on functional correctness and safety.
+          allowed_tools: "Read,Grep,Glob"
+          max_turns: "8"
