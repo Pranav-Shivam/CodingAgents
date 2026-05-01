@@ -6,7 +6,9 @@ tools:
   - Read
   - Grep
   - Glob
-model: claude-sonnet-4-6
+model: sonnet
+permissionMode: plan
+maxTurns: 20
 ---
 
 # Config & Infra Agent

@@ -1,25 +1,49 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## What this repo is
 
-A **Claude Code skill and reference library** — not a runnable application. It contains:
+Claude Code skill and reference library — not a runnable app. Contains:
 
-- `.claude/security-scan/SKILL.md` — the `security-scan` skill orchestrator specification
-- `.claude/security-scan/references/` — ten specialist subagent guides (one per security domain)
-- `.claude/rules/principles_v2.md` — agentic coding standards (canonical reference)
-- `.claude/rules/principles.md` — extended v1 with additional failure mode detail
+- `.claude/commands/security-scan.md` — `/security-scan` orchestrator (dispatches 10 parallel subagents)
+- `.claude/agents/` — 10 specialist security subagents (auth, sast, deps, config, data, iac, crypto, rbac, database, secrets)
+- `.claude/commands/` — workflow skills (git-commit, pr-description, learn)
+- `.claude/rules/principles_v2.md` — agentic coding standards (canonical)
+- `.claude/rules/principles.md` — extended v1 with full failure mode detail
 
+## Agentic Coding Standards
 
-## Agentic coding standards (from `.claude/rules/principles_v2.md`)
+1. **Clarify before building** — State assumptions explicitly; ask once, precisely.
+2. **Lean and purposeful code** — Implement exactly what was asked; no gold-plating.
+3. **Precise, bounded edits** — Touch only what the task requires; flag, don't fix, unrelated issues.
+4. **Outcome-oriented execution** — Define verifiable end state before starting.
+5. **Verify and recover** — Run verification after every non-trivial change; never mark done without confirming success.
 
-These govern how Claude should behave when working in *any* codebase, and are the design rationale behind this repo's approach.
+**Known failure modes:** unchecked assumptions, session memory decay, phantom API usage, pushback capitulation, scope creep, optimistic execution through ambiguity.
 
-1. **Clarify before building** — State assumptions explicitly; ask once, precisely, before coding.
-2. **Lean and purposeful code** — Implement exactly what was asked; no abstractions for single-use code, no future-proofing.
-3. **Precise, bounded edits** — Touch only what the task requires; flag (don't fix) unrelated issues spotted along the way.
-4. **Outcome-oriented execution** — Convert every task into a verifiable end state before starting; define success criteria, not steps.
-5. **Verify and recover** — Run the build/tests after every non-trivial change; never mark done without confirming the success criterion.
+## Communication Rules
 
-**Known failure modes to avoid:** unchecked early assumptions, session memory decay (re-read constraints at task boundaries), phantom API usage (verify signatures against source), pushback capitulation (yield to better arguments, not pressure), scope creep, and optimistic execution through ambiguity.
+- No emoji in any output — responses, code, commits, docs, comments. None. Ever.
+
+## Research Documentation Rule
+
+IMPORTANT: Any time you use WebSearch, WebFetch, or any external research tool — you MUST document findings as follows:
+
+1. List every URL visited, with a one-line description of what it contained
+2. Quote exact text for any fact, claim, or number cited
+3. Note if a URL returned no useful content or was inaccessible
+4. Save research findings to `docs/research/` when they inform a decision or change made in this repo
+
+Format for inline citation:
+```
+Source: [page title](https://full-url) — what was found there
+```
+
+Never summarize research without citing where it came from. Uncited claims = unverifiable claims.
+
+## Further Reading
+
+IMPORTANT: Before starting any task, read relevant docs below first. Do not skip this.
+
+- `docs/gotchas.md` — hard-won lessons and non-obvious patterns
+- `docs/architecture.md` — repo structure, design rationale, agent relationships
+- `docs/research/` — web research logs with sources (created when research informs decisions)
