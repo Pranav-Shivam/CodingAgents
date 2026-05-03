@@ -313,7 +313,12 @@ if [ "$MODE" = "project" ]; then
       echo "  merged:  ${CLAUDE_MD}"
     fi
   else
-    fetch_raw "CLAUDE.template.md" "$CLAUDE_MD"
+    mkdir -p "$(dirname "$CLAUDE_MD")"
+    if [ "$USE_REMOTE" = true ]; then
+      curl -fsSL "${RAW_BASE}/CLAUDE.template.md" -o "$CLAUDE_MD"
+    else
+      cp "${LOCAL_ROOT}/CLAUDE.template.md" "$CLAUDE_MD"
+    fi
     echo "  created: ${CLAUDE_MD}"
   fi
 
