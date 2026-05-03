@@ -2,6 +2,24 @@
 
 A collection of Claude Code skills, subagent definitions, and agentic coding standards — not a runnable application.
 
+## Install
+
+**Global** — agents and commands available in all projects:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash
+```
+
+**Project-scoped** — installs into current directory's `.claude/`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --project
+```
+
+Restart Claude Code after install. See [setup.md](setup.md) for full options including Windows and clone-based install.
+
+---
+
 ## Contents
 
 ```

@@ -1,122 +1,187 @@
 #!/usr/bin/env bash
-# install.sh — install auto-terminal into any Claude Code project
-# Usage: bash install.sh [target-dir]
-# Default target: current working directory
+# install.sh — install CodingAgents skills, agents, commands, and rules
+#
+# Curl install (global, into ~/.claude):
+#   curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash
+#
+# Curl install (project-scoped):
+#   curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --project
+#
+# Local install (from cloned repo):
+#   bash install.sh [--global | --project [target-dir]]
 
 set -euo pipefail
 
-TARGET_DIR="${1:-$(pwd)}"
-SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# ---------------------------------------------------------------------------
+# Config
+# ---------------------------------------------------------------------------
+REPO="Pranav-Shivam/CodingAgents"
+BRANCH="main"
+RAW_BASE="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 
-echo "Installing auto-terminal into: ${TARGET_DIR}"
-
-# Create directory structure
-mkdir -p "${TARGET_DIR}/.claude/commands"
-mkdir -p "${TARGET_DIR}/.claude/scripts"
-mkdir -p "${TARGET_DIR}/.claude/logs"
-mkdir -p "${TARGET_DIR}/reports"
-
-# Copy files
-cp "${SOURCE_DIR}/.claude/commands/auto-terminal.md" "${TARGET_DIR}/.claude/commands/auto-terminal.md"
-cp "${SOURCE_DIR}/.claude/scripts/spawn-subagent.sh"  "${TARGET_DIR}/.claude/scripts/spawn-subagent.sh"
-cp "${SOURCE_DIR}/.claude/scripts/notify.sh"          "${TARGET_DIR}/.claude/scripts/notify.sh"
-cp "${SOURCE_DIR}/.claude/report-template.md"         "${TARGET_DIR}/.claude/report-template.md"
-
-# Make scripts executable
-chmod +x "${TARGET_DIR}/.claude/scripts/spawn-subagent.sh"
-chmod +x "${TARGET_DIR}/.claude/scripts/notify.sh"
-
-# Touch agent-status file
-touch "${TARGET_DIR}/.claude/agent-status"
-
-# Merge CLAUDE.md section (guard against duplicate)
-CLAUDE_MD="${TARGET_DIR}/CLAUDE.md"
-MARKER="## auto-terminal"
-
-CLAUDE_SECTION='
-## auto-terminal
-
-### How it works
-
-`/auto-terminal <task>` spawns a child Claude Code agent in a new terminal window.
-Child works autonomously on a separate task while parent continues unblocked.
-
-**Flow:**
-1. Parent writes `.claude/fork-context.md` — lean project snapshot for the child
-2. Parent runs `bash .claude/scripts/spawn-subagent.sh "<slug>" "<task>"`
-3. Child opens in new terminal, reads fork-context.md, works fully autonomously
-4. Child writes report to `reports/<slug>-report.md` when done
-5. Child signals completion: `echo "DONE:<slug>" >> .claude/agent-status`
-6. Child calls `bash .claude/scripts/notify.sh "<slug>"` for desktop notification
-7. Parent checks `.claude/agent-status` at natural breakpoints
-
-### Report naming — always `<slug>-report.md`
-
-Every report file: `reports/<slug>-report.md`
-- Never `reports/<slug>.md`
-- slug = lowercase hyphenated task name, max 4 words
-- Example: "build frontend components" → `reports/frontend-components-report.md`
-- This pattern is enforced in: spawn-subagent.sh, child prompt, notify.sh, auto-terminal.md
-
-### File ownership
-
-Parent declares owned files in `fork-context.md` under `parent_owns`.
-Child reads but never writes to those paths.
-Each child owns whatever it creates — listed in its report under "Files created".
-
-### Multiple simultaneous children
-
-Each child gets a unique slug. `.claude/agent-status` is append-only:
-```
-DONE:frontend-components
-DONE:auth-middleware
-```
-Parent checks each slug independently. Each child notifies independently.
-Never summarize child output in parent thread — point to `reports/<slug>-report.md`.
-
-### Runtime files (not committed)
-
-- `.claude/agent-status` — completion signals (append-only)
-- `.claude/logs/<slug>.log` — child stdout
-- `.claude/fork-context.md` — project snapshot (overwritten each spawn)
-- `.claude/child-prompt-<slug>.md` — child system prompt
-- `.claude/child-pid-<slug>` — PID file (headless fallback only)
-'
-
-if [ -f "$CLAUDE_MD" ]; then
-  if grep -q "$MARKER" "$CLAUDE_MD" 2>/dev/null; then
-    echo "CLAUDE.md already contains auto-terminal section — skipping merge"
-  else
-    echo "$CLAUDE_SECTION" >> "$CLAUDE_MD"
-    echo "Merged auto-terminal section into existing CLAUDE.md"
-  fi
-else
-  echo "# CLAUDE.md" > "$CLAUDE_MD"
-  echo "$CLAUDE_SECTION" >> "$CLAUDE_MD"
-  echo "Created CLAUDE.md with auto-terminal section"
-fi
-
-# Add runtime files to .gitignore
-GITIGNORE="${TARGET_DIR}/.gitignore"
-GITIGNORE_ENTRIES=(
-  ".claude/agent-status"
-  ".claude/logs/"
-  ".claude/fork-context.md"
-  ".claude/child-prompt-*.md"
-  ".claude/child-pid-*"
-  ".claude/launcher-*.sh"
+# Files to install: "source-path:dest-relative-to-install-root"
+# dest is relative to ~/.claude (global) or <project>/.claude (project)
+AGENT_FILES=(
+  ".claude/agents/auth-agent.md"
+  ".claude/agents/config-agent.md"
+  ".claude/agents/crypto-tls-agent.md"
+  ".claude/agents/data-agent.md"
+  ".claude/agents/database-agent.md"
+  ".claude/agents/deps-agent.md"
+  ".claude/agents/emoji-agent.md"
+  ".claude/agents/iac-container-agent.md"
+  ".claude/agents/rbac-agent.md"
+  ".claude/agents/sast-agent.md"
+  ".claude/agents/secrets-agent.md"
 )
 
-if [ ! -f "$GITIGNORE" ]; then
-  touch "$GITIGNORE"
-fi
+COMMAND_FILES=(
+  ".claude/commands/auto-terminal.md"
+  ".claude/commands/git-commit.md"
+  ".claude/commands/learn.md"
+  ".claude/commands/pr-description.md"
+  ".claude/commands/security-scan.md"
+)
 
-for entry in "${GITIGNORE_ENTRIES[@]}"; do
-  if ! grep -qF "$entry" "$GITIGNORE" 2>/dev/null; then
-    echo "$entry" >> "$GITIGNORE"
-    echo "Added to .gitignore: $entry"
-  fi
+RULE_FILES=(
+  ".claude/rules/principles.md"
+  ".claude/rules/principles_v2.md"
+)
+
+SCRIPT_FILES=(
+  ".claude/scripts/spawn-subagent.sh"
+  ".claude/scripts/notify.sh"
+)
+
+MISC_FILES=(
+  ".claude/report-template.md"
+)
+
+HOOK_FILES=(
+  ".claude/hooks/pre-tool-safety.sh"
+  ".claude/hooks/session-start.sh"
+)
+
+# ---------------------------------------------------------------------------
+# Parse args
+# ---------------------------------------------------------------------------
+MODE="global"
+TARGET_DIR=""
+
+for arg in "$@"; do
+  case "$arg" in
+    --project) MODE="project" ;;
+    --global)  MODE="global" ;;
+    *)         TARGET_DIR="$arg" ;;
+  esac
 done
 
+if [ "$MODE" = "global" ]; then
+  INSTALL_ROOT="${HOME}/.claude"
+else
+  INSTALL_ROOT="${TARGET_DIR:-$(pwd)}/.claude"
+fi
+
+# ---------------------------------------------------------------------------
+# Detect execution context: curl pipe vs local
+# ---------------------------------------------------------------------------
+SCRIPT_PATH="${BASH_SOURCE[0]:-}"
+if [ -z "$SCRIPT_PATH" ] || [ ! -f "$SCRIPT_PATH" ]; then
+  # Running via curl pipe — fetch from GitHub
+  USE_REMOTE=true
+  LOCAL_ROOT=""
+else
+  USE_REMOTE=false
+  LOCAL_ROOT="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+fi
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+install_file() {
+  local src="$1"   # repo-relative path, e.g. .claude/agents/auth-agent.md
+  local dest="${INSTALL_ROOT}/${src#.claude/}"
+
+  mkdir -p "$(dirname "$dest")"
+
+  if [ "$USE_REMOTE" = true ]; then
+    curl -fsSL "${RAW_BASE}/${src}" -o "$dest"
+  else
+    cp "${LOCAL_ROOT}/${src}" "$dest"
+  fi
+
+  echo "  installed: $dest"
+}
+
+make_executable() {
+  local src="$1"
+  local dest="${INSTALL_ROOT}/${src#.claude/}"
+  chmod +x "$dest"
+}
+
+# ---------------------------------------------------------------------------
+# Install
+# ---------------------------------------------------------------------------
+echo "CodingAgents installer"
+echo "  mode:   ${MODE}"
+echo "  target: ${INSTALL_ROOT}"
 echo ""
-echo "Installed. Usage: /auto-terminal <task>  |  Reports -> reports/<feature-name>-report.md"
+
+echo "Agents:"
+for f in "${AGENT_FILES[@]}"; do install_file "$f"; done
+
+echo ""
+echo "Commands:"
+for f in "${COMMAND_FILES[@]}"; do install_file "$f"; done
+
+echo ""
+echo "Rules:"
+for f in "${RULE_FILES[@]}"; do install_file "$f"; done
+
+echo ""
+echo "Scripts:"
+for f in "${SCRIPT_FILES[@]}"; do install_file "$f"; done
+for f in "${SCRIPT_FILES[@]}"; do make_executable "$f"; done
+
+echo ""
+echo "Misc:"
+for f in "${MISC_FILES[@]}"; do install_file "$f"; done
+
+if [ "$MODE" = "project" ]; then
+  echo ""
+  echo "Hooks:"
+  for f in "${HOOK_FILES[@]}"; do install_file "$f"; done
+  for f in "${HOOK_FILES[@]}"; do make_executable "$f"; done
+
+  # Touch runtime files
+  touch "${INSTALL_ROOT}/agent-status"
+  mkdir -p "${INSTALL_ROOT}/logs"
+
+  # .gitignore entries
+  PROJECT_ROOT="$(dirname "$INSTALL_ROOT")"
+  GITIGNORE="${PROJECT_ROOT}/.gitignore"
+  touch "$GITIGNORE"
+  for entry in \
+    ".claude/agent-status" \
+    ".claude/logs/" \
+    ".claude/fork-context.md" \
+    ".claude/child-prompt-*.md" \
+    ".claude/child-pid-*" \
+    ".claude/launcher-*.sh"
+  do
+    if ! grep -qF "$entry" "$GITIGNORE" 2>/dev/null; then
+      echo "$entry" >> "$GITIGNORE"
+    fi
+  done
+  echo "  updated: .gitignore"
+fi
+
+echo ""
+echo "Done. Restart Claude Code to pick up new agents and commands."
+echo ""
+echo "Available commands:"
+echo "  /security-scan    — run 10 parallel security subagents"
+echo "  /auto-terminal    — spawn autonomous child agent in new terminal"
+echo "  /git-commit       — structured commit workflow"
+echo "  /pr-description   — generate PR description"
+echo "  /learn            — capture lessons to gotchas.md"

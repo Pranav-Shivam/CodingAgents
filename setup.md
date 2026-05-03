@@ -27,48 +27,55 @@ Or on Windows PowerShell:
 
 ---
 
-## Clone
+## Install
+
+### Option A — curl (no clone required)
+
+**Global install** — agents and commands available in all projects (`~/.claude/`):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash
+```
+
+**Project-scoped install** — installs into current directory's `.claude/`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --project
+```
+
+### Option B — clone then install
 
 ```bash
 git clone https://github.com/Pranav-Shivam/CodingAgents.git
 cd CodingAgents
-```
 
----
+# Global (default)
+bash install.sh
 
-## Install auto-terminal into your project
-
-Run from the cloned repo root, passing your target project directory:
-
-### macOS / Linux
-
-```bash
-bash install.sh /path/to/your/project
+# Project-scoped into a specific directory
+bash install.sh --project /path/to/your/project
 ```
 
 ### Windows (Git Bash)
 
 ```bash
-bash install.sh "C:/path/to/your/project"
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --project
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
-bash install.sh "$env:USERPROFILE\your-project"
-```
-
-Omit the path to install into the current directory:
-
-```bash
-bash install.sh
+# Download then run
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh" -OutFile install.sh
+bash install.sh --project
 ```
 
 What `install.sh` does:
-- Creates `.claude/commands/`, `.claude/scripts/`, `.claude/logs/`, `reports/`
-- Copies `auto-terminal.md`, `spawn-subagent.sh`, `notify.sh`, `report-template.md`
-- Appends the `## auto-terminal` section to `CLAUDE.md`
-- Adds runtime artifacts to `.gitignore`
+- Installs 11 security agents into `.claude/agents/`
+- Installs 5 commands (`/security-scan`, `/auto-terminal`, `/git-commit`, `/pr-description`, `/learn`) into `.claude/commands/`
+- Installs agentic coding rules into `.claude/rules/`
+- Installs `spawn-subagent.sh`, `notify.sh` into `.claude/scripts/`
+- Project mode also installs hooks and updates `.gitignore`
 
 ---
 
