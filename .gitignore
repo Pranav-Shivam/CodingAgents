@@ -1,0 +1,7 @@
+# auto-terminal runtime artifacts — never commit these
+.claude/agent-status
+.claude/logs/
+.claude/fork-context.md
+.claude/child-prompt-*.md
+.claude/child-pid-*
+.claude/launcher-*.sh
