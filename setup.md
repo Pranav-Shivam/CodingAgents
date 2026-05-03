@@ -138,6 +138,18 @@ pip install bandit semgrep pip-audit safety detect-secrets checkov sslyze
 
 ---
 
+## Uninstall
+
+```bash
+# Global
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --uninstall
+
+# Project-scoped
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --uninstall --project
+```
+
+---
+
 ## Verify install
 
 ```bash

@@ -18,6 +18,12 @@ curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/ins
 
 Restart Claude Code after install. See [setup.md](setup.md) for full options including Windows and clone-based install.
 
+**Uninstall:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --uninstall --project
+```
+
 ---
 
 ## Contents
