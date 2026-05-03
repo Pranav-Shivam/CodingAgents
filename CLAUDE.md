@@ -47,3 +47,51 @@ IMPORTANT: Before starting any task, read relevant docs below first. Do not skip
 - `docs/gotchas.md` — hard-won lessons and non-obvious patterns
 - `docs/architecture.md` — repo structure, design rationale, agent relationships
 - `docs/research/` — web research logs with sources (created when research informs decisions)
+
+## auto-terminal
+
+### How it works
+
+`/auto-terminal <task>` spawns a child Claude Code agent in a new terminal window.
+Child works autonomously on a separate task while parent continues unblocked.
+
+**Flow:**
+1. Parent writes `.claude/fork-context.md` — lean project snapshot for the child
+2. Parent runs `bash .claude/scripts/spawn-subagent.sh "<slug>" "<task>"`
+3. Child opens in new terminal, reads fork-context.md, works fully autonomously
+4. Child writes report to `reports/<slug>-report.md` when done
+5. Child signals completion: `echo "DONE:<slug>" >> .claude/agent-status`
+6. Child calls `bash .claude/scripts/notify.sh "<slug>"` for desktop notification
+7. Parent checks `.claude/agent-status` at natural breakpoints
+
+### Report naming — always `<slug>-report.md`
+
+Every report file: `reports/<slug>-report.md`
+- Never `reports/<slug>.md`
+- slug = lowercase hyphenated task name, max 4 words
+- Example: "build frontend components" → `reports/frontend-components-report.md`
+- Enforced in: spawn-subagent.sh, child prompt, notify.sh, auto-terminal.md
+
+### File ownership
+
+Parent declares owned files in `fork-context.md` under `parent_owns`.
+Child reads but never writes to those paths.
+Each child owns whatever it creates — listed in its report under "Files created".
+
+### Multiple simultaneous children
+
+Each child gets a unique slug. `.claude/agent-status` is append-only:
+```
+DONE:frontend-components
+DONE:auth-middleware
+```
+Parent checks each slug independently. Each child notifies independently.
+Never summarize child output in parent thread — point to `reports/<slug>-report.md`.
+
+### Runtime files (not committed)
+
+- `.claude/agent-status` — completion signals (append-only)
+- `.claude/logs/<slug>.log` — child stdout
+- `.claude/fork-context.md` — project snapshot (overwritten each spawn)
+- `.claude/child-prompt-<slug>.md` — child system prompt
+- `.claude/child-pid-<slug>` — PID file (headless fallback only)
