@@ -5,3 +5,4 @@
 .claude/child-prompt-*.md
 .claude/child-pid-*
 .claude/launcher-*.sh
+docs/research/*
