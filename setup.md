@@ -71,11 +71,22 @@ bash install.sh --project
 ```
 
 What `install.sh` does:
-- Installs 11 security agents into `.claude/agents/`
-- Installs 5 commands (`/security-scan`, `/auto-terminal`, `/git-commit`, `/pr-description`, `/learn`) into `.claude/commands/`
-- Installs agentic coding rules into `.claude/rules/`
-- Installs `spawn-subagent.sh`, `notify.sh` into `.claude/scripts/`
-- Project mode also installs hooks and updates `.gitignore`
+
+**Both modes:**
+- 11 security agents → `.claude/agents/`
+- 5 commands (`/security-scan`, `/auto-terminal`, `/git-commit`, `/pr-description`, `/learn`) → `.claude/commands/`
+- Agentic coding rules → `.claude/rules/`
+- Scripts (`spawn-subagent.sh`, `notify.sh`) → `.claude/scripts/`
+- Report template → `.claude/report-template.md`
+
+**Project mode only** (additional):
+- Hooks → `.claude/hooks/`
+- `CLAUDE.md` — created from template, or merged if one exists (guards against duplicate)
+- `docs/gotchas.md`, `docs/architecture.md` — referenced by CLAUDE.md
+- `docs/research/` — directory for web research logs
+- `reports/` — directory for agent output reports
+- `.claude/settings.json` — hooks wired up + security tool permissions (skipped if exists, saved as `settings.example.json` instead)
+- `.gitignore` entries for runtime artifacts
 
 ---
 

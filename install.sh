@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# install.sh — install CodingAgents skills, agents, commands, and rules
+# install.sh — install CodingAgents skills, agents, commands, rules, and docs
 #
-# Curl install (global, into ~/.claude):
+# Curl install (global, into ~/.claude — agents/commands available in all projects):
 #   curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash
 #
-# Curl install (project-scoped):
+# Curl install (project-scoped — run from inside your project):
 #   curl -fsSL https://raw.githubusercontent.com/Pranav-Shivam/CodingAgents/main/install.sh | bash -s -- --project
 #
 # Local install (from cloned repo):
@@ -12,74 +12,30 @@
 
 set -euo pipefail
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
 REPO="Pranav-Shivam/CodingAgents"
 BRANCH="main"
 RAW_BASE="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
-
-# Files to install: "source-path:dest-relative-to-install-root"
-# dest is relative to ~/.claude (global) or <project>/.claude (project)
-AGENT_FILES=(
-  ".claude/agents/auth-agent.md"
-  ".claude/agents/config-agent.md"
-  ".claude/agents/crypto-tls-agent.md"
-  ".claude/agents/data-agent.md"
-  ".claude/agents/database-agent.md"
-  ".claude/agents/deps-agent.md"
-  ".claude/agents/emoji-agent.md"
-  ".claude/agents/iac-container-agent.md"
-  ".claude/agents/rbac-agent.md"
-  ".claude/agents/sast-agent.md"
-  ".claude/agents/secrets-agent.md"
-)
-
-COMMAND_FILES=(
-  ".claude/commands/auto-terminal.md"
-  ".claude/commands/git-commit.md"
-  ".claude/commands/learn.md"
-  ".claude/commands/pr-description.md"
-  ".claude/commands/security-scan.md"
-)
-
-RULE_FILES=(
-  ".claude/rules/principles.md"
-  ".claude/rules/principles_v2.md"
-)
-
-SCRIPT_FILES=(
-  ".claude/scripts/spawn-subagent.sh"
-  ".claude/scripts/notify.sh"
-)
-
-MISC_FILES=(
-  ".claude/report-template.md"
-)
-
-HOOK_FILES=(
-  ".claude/hooks/pre-tool-safety.sh"
-  ".claude/hooks/session-start.sh"
-)
 
 # ---------------------------------------------------------------------------
 # Parse args
 # ---------------------------------------------------------------------------
 MODE="global"
-TARGET_DIR=""
+PROJECT_ROOT=""
 
 for arg in "$@"; do
   case "$arg" in
     --project) MODE="project" ;;
     --global)  MODE="global" ;;
-    *)         TARGET_DIR="$arg" ;;
+    *)         PROJECT_ROOT="$arg" ;;
   esac
 done
 
 if [ "$MODE" = "global" ]; then
-  INSTALL_ROOT="${HOME}/.claude"
+  CLAUDE_DIR="${HOME}/.claude"
+  PROJECT_ROOT="${HOME}"
 else
-  INSTALL_ROOT="${TARGET_DIR:-$(pwd)}/.claude"
+  PROJECT_ROOT="${PROJECT_ROOT:-$(pwd)}"
+  CLAUDE_DIR="${PROJECT_ROOT}/.claude"
 fi
 
 # ---------------------------------------------------------------------------
@@ -87,7 +43,6 @@ fi
 # ---------------------------------------------------------------------------
 SCRIPT_PATH="${BASH_SOURCE[0]:-}"
 if [ -z "$SCRIPT_PATH" ] || [ ! -f "$SCRIPT_PATH" ]; then
-  # Running via curl pipe — fetch from GitHub
   USE_REMOTE=true
   LOCAL_ROOT=""
 else
@@ -98,67 +53,149 @@ fi
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-install_file() {
-  local src="$1"   # repo-relative path, e.g. .claude/agents/auth-agent.md
-  local dest="${INSTALL_ROOT}/${src#.claude/}"
 
+# fetch_raw: download or copy a repo-relative file, write to $dest
+fetch_raw() {
+  local src="$1"
+  local dest="$2"
   mkdir -p "$(dirname "$dest")"
-
   if [ "$USE_REMOTE" = true ]; then
     curl -fsSL "${RAW_BASE}/${src}" -o "$dest"
   else
     cp "${LOCAL_ROOT}/${src}" "$dest"
   fi
-
   echo "  installed: $dest"
 }
 
-make_executable() {
+# install_claude_file: maps .claude/X → $CLAUDE_DIR/X
+install_claude_file() {
   local src="$1"
-  local dest="${INSTALL_ROOT}/${src#.claude/}"
-  chmod +x "$dest"
+  fetch_raw "$src" "${CLAUDE_DIR}/${src#.claude/}"
+}
+
+make_executable() {
+  chmod +x "${CLAUDE_DIR}/${1#.claude/}"
 }
 
 # ---------------------------------------------------------------------------
-# Install
+# Install agents, commands, rules, scripts, misc
 # ---------------------------------------------------------------------------
 echo "CodingAgents installer"
-echo "  mode:   ${MODE}"
-echo "  target: ${INSTALL_ROOT}"
+echo "  mode:        ${MODE}"
+echo "  claude dir:  ${CLAUDE_DIR}"
+echo "  project:     ${PROJECT_ROOT}"
 echo ""
 
 echo "Agents:"
-for f in "${AGENT_FILES[@]}"; do install_file "$f"; done
+for f in \
+  .claude/agents/auth-agent.md \
+  .claude/agents/config-agent.md \
+  .claude/agents/crypto-tls-agent.md \
+  .claude/agents/data-agent.md \
+  .claude/agents/database-agent.md \
+  .claude/agents/deps-agent.md \
+  .claude/agents/emoji-agent.md \
+  .claude/agents/iac-container-agent.md \
+  .claude/agents/rbac-agent.md \
+  .claude/agents/sast-agent.md \
+  .claude/agents/secrets-agent.md
+do install_claude_file "$f"; done
 
 echo ""
 echo "Commands:"
-for f in "${COMMAND_FILES[@]}"; do install_file "$f"; done
+for f in \
+  .claude/commands/auto-terminal.md \
+  .claude/commands/git-commit.md \
+  .claude/commands/learn.md \
+  .claude/commands/pr-description.md \
+  .claude/commands/security-scan.md
+do install_claude_file "$f"; done
 
 echo ""
 echo "Rules:"
-for f in "${RULE_FILES[@]}"; do install_file "$f"; done
+for f in \
+  .claude/rules/principles.md \
+  .claude/rules/principles_v2.md
+do install_claude_file "$f"; done
 
 echo ""
 echo "Scripts:"
-for f in "${SCRIPT_FILES[@]}"; do install_file "$f"; done
-for f in "${SCRIPT_FILES[@]}"; do make_executable "$f"; done
+for f in \
+  .claude/scripts/spawn-subagent.sh \
+  .claude/scripts/notify.sh
+do install_claude_file "$f"; done
+make_executable .claude/scripts/spawn-subagent.sh
+make_executable .claude/scripts/notify.sh
 
 echo ""
 echo "Misc:"
-for f in "${MISC_FILES[@]}"; do install_file "$f"; done
+install_claude_file .claude/report-template.md
 
+# ---------------------------------------------------------------------------
+# Project-mode extras: hooks, CLAUDE.md, docs, settings, reports, .gitignore
+# ---------------------------------------------------------------------------
 if [ "$MODE" = "project" ]; then
+
   echo ""
   echo "Hooks:"
-  for f in "${HOOK_FILES[@]}"; do install_file "$f"; done
-  for f in "${HOOK_FILES[@]}"; do make_executable "$f"; done
+  for f in \
+    .claude/hooks/pre-tool-safety.sh \
+    .claude/hooks/session-start.sh
+  do install_claude_file "$f"; done
+  make_executable .claude/hooks/pre-tool-safety.sh
+  make_executable .claude/hooks/session-start.sh
 
-  # Touch runtime files
-  touch "${INSTALL_ROOT}/agent-status"
-  mkdir -p "${INSTALL_ROOT}/logs"
+  echo ""
+  echo "Docs:"
+  fetch_raw "docs/gotchas.md"    "${PROJECT_ROOT}/docs/gotchas.md"
+  fetch_raw "docs/architecture.md" "${PROJECT_ROOT}/docs/architecture.md"
+  mkdir -p "${PROJECT_ROOT}/docs/research"
+  echo "  created: ${PROJECT_ROOT}/docs/research/"
 
-  # .gitignore entries
-  PROJECT_ROOT="$(dirname "$INSTALL_ROOT")"
+  echo ""
+  echo "Reports directory:"
+  mkdir -p "${PROJECT_ROOT}/reports"
+  echo "  created: ${PROJECT_ROOT}/reports/"
+
+  echo ""
+  echo "Settings:"
+  SETTINGS_FILE="${CLAUDE_DIR}/settings.json"
+  if [ -f "$SETTINGS_FILE" ]; then
+    echo "  skipped: ${SETTINGS_FILE} already exists — review .claude/settings.example.json for reference"
+    fetch_raw ".claude/settings.json" "${CLAUDE_DIR}/settings.example.json"
+  else
+    fetch_raw ".claude/settings.json" "$SETTINGS_FILE"
+    echo "  installed: ${SETTINGS_FILE}"
+  fi
+
+  echo ""
+  echo "CLAUDE.md:"
+  CLAUDE_MD="${PROJECT_ROOT}/CLAUDE.md"
+  if [ -f "$CLAUDE_MD" ]; then
+    if grep -q "## auto-terminal" "$CLAUDE_MD" 2>/dev/null; then
+      echo "  skipped: CLAUDE.md already contains auto-terminal section"
+    else
+      # Append template content (skip the # CLAUDE.md header line)
+      if [ "$USE_REMOTE" = true ]; then
+        curl -fsSL "${RAW_BASE}/CLAUDE.template.md" | tail -n +3 >> "$CLAUDE_MD"
+      else
+        tail -n +3 "${LOCAL_ROOT}/CLAUDE.template.md" >> "$CLAUDE_MD"
+      fi
+      echo "  merged:  ${CLAUDE_MD}"
+    fi
+  else
+    fetch_raw "CLAUDE.template.md" "$CLAUDE_MD"
+    echo "  created: ${CLAUDE_MD}"
+  fi
+
+  echo ""
+  echo "Runtime files:"
+  touch "${CLAUDE_DIR}/agent-status"
+  mkdir -p "${CLAUDE_DIR}/logs"
+  echo "  created: .claude/agent-status, .claude/logs/"
+
+  echo ""
+  echo ".gitignore:"
   GITIGNORE="${PROJECT_ROOT}/.gitignore"
   touch "$GITIGNORE"
   for entry in \
@@ -167,15 +204,20 @@ if [ "$MODE" = "project" ]; then
     ".claude/fork-context.md" \
     ".claude/child-prompt-*.md" \
     ".claude/child-pid-*" \
-    ".claude/launcher-*.sh"
+    ".claude/launcher-*.sh" \
+    ".claude/settings.example.json"
   do
     if ! grep -qF "$entry" "$GITIGNORE" 2>/dev/null; then
       echo "$entry" >> "$GITIGNORE"
+      echo "  added: $entry"
     fi
   done
-  echo "  updated: .gitignore"
+
 fi
 
+# ---------------------------------------------------------------------------
+# Done
+# ---------------------------------------------------------------------------
 echo ""
 echo "Done. Restart Claude Code to pick up new agents and commands."
 echo ""
