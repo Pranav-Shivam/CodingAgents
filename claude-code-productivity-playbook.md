@@ -1,5 +1,7 @@
 # How to 10x Your Productivity With Claude Code: A Practical Playbook
 
+![alt text](image.png)
+
 *Part III of the Claude Code Trilogy · Deep Dive · AI Engineering · Developer Tools*
 
 ---
